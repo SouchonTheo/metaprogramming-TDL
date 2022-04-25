@@ -1,0 +1,57 @@
+// test {
+//	int i = 1;
+// }
+
+interface I <T> {
+
+	void m();
+	
+	T m(T _t);
+	
+}
+
+interface J <T1,T2> extends I<T1> {
+
+	void m(T1 _t1, T2 _t2);
+	
+}
+
+class A <E extends I<A> & J<A,A>> implements I<A>, J<A,A> {
+
+	private int a;
+	public static final int b = 1;
+
+	public final void m() {
+	}
+	
+	protected int m(int i) {
+	}
+	
+	public A() {
+		this(0);
+	}
+	
+	private A(int _a) {
+		this.a = _a;
+	}
+}
+
+class B implements I {
+}
+
+class C<E extends I<C>> extends A<C> {
+
+	public B() {
+		super();
+	}
+}
+
+public class Main {
+	public static void main(String args[]) {
+		I tab[] = new I [2];
+		I a = new A();
+		tab[0] = a;
+		tab[1] = new B();
+		tab[0].m();
+	}
+}
