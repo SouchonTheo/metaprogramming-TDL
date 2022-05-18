@@ -1,0 +1,37 @@
+(TODO)
+? = to merge
+
+/Expression
+    /Accessible:
+        - FieldAccess
+        - ParameterAccess ?
+        
+    /Allocation:
+        - PointerAllocation ?
+        
+    /Assignable:
+        - ArrayAssignment ?
+        - FieldAssignment
+        - PointerAssignment ?
+        - VariableAssignment ?
+
+    - AbstractConversion
+    - FunctionCall ?
+    
+/Instruction
+    /Declaration:
+        - FunctionDeclaration ?
+        - TypeDeclaration ?
+        - Conditionnal ?
+        - Repetition ?
+        - Printer ? (alocateMemory offset)
+        - Return ?
+        
+/Type
+    - ArrayType ? (length)
+    - EnumerationType (merge/length)
+    - FunctionType (merge/length)
+    - PointerType (merge/length)
+    - RecordType (merge)
+    
+- Block ?
