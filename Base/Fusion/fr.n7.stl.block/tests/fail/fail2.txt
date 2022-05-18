@@ -1,0 +1,5 @@
+//IdentifierAccess ligne 92
+fail2{
+
+    int x = f;
+}

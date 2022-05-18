@@ -1,0 +1,5 @@
+//AbstractArray ligne 76
+fail7{
+    int x[] = new int[2];
+    x[5.3] = 8;
+}

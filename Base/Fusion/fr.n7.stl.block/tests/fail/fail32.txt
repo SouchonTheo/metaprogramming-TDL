@@ -1,0 +1,5 @@
+//UnaryExpression ligne 74
+test32{
+    int z = 5;
+    z = !z;
+}

@@ -1,0 +1,5 @@
+//AbstractField ligne 92
+test12{
+	int x = 5;
+    x.y = 2;
+}

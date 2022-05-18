@@ -1,0 +1,7 @@
+//FonctionCall ligne 101
+test29{
+    int pgcd(int x, int y) {
+        return 5.0;
+    }
+    print pgcd(s);
+}

@@ -1,0 +1,5 @@
+//AbstractConversion ligne 62
+fail8{
+    String x = "2.5";
+    int y = (int) x;
+}

@@ -3,7 +3,6 @@
  */
 package fr.n7.stl.block.ast;
 
-import java.util.Iterator;
 import java.util.List;
 
 import fr.n7.stl.block.ast.instruction.Instruction;
@@ -33,27 +32,16 @@ public class Block {
 	 * Sequence of instructions contained in a block.
 	 */
 	protected List<Instruction> instructions;
+	protected HierarchicalScope<Declaration> tds;
 
+	private int size;
+	private int offset;
 	/**
 	 * Constructor for a block.
 	 */
 	public Block(List<Instruction> _instructions) {
 		this.instructions = _instructions;
 	}
-	
-	/**
-	 * Size of the block in order to allocate memory
-	 */
-	private int size;
-	
-	/**
-	 * Offset before of the block
-	 */
-	private int offset;
-	
-	private Register register;
-	
-	private HierarchicalScope<Declaration> local;
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -75,15 +63,13 @@ public class Block {
 	 * @return Synthesized Semantics attribute that indicates if the identifier declaration are
 	 * allowed.
 	 */
-	public boolean collect(HierarchicalScope<Declaration> _scope) {
-		boolean ret = true;
-		local = new SymbolTable(_scope);
-		Iterator<Instruction> it = this.instructions.iterator();
-		while (ret && it.hasNext()) {
-			ret = it.next().collectAndBackwardResolve(local);
+	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
+		boolean result = true;
+		tds = new SymbolTable(_scope);
+		for (Instruction _instruction : this.instructions) {
+			result = result && _instruction.collectAndBackwardResolve(tds);
 		}
-		//System.out.println(local.toString());
-		return ret;
+		return result;
 	}
 	
 	/**
@@ -93,13 +79,12 @@ public class Block {
 	 * @return Synthesized Semantics attribute that indicates if the identifier used in the
 	 * block have been previously defined.
 	 */
-	public boolean resolve(HierarchicalScope<Declaration> _scope) {
-		boolean ret = true;
-		Iterator<Instruction> it = this.instructions.iterator();
-		while (ret && it.hasNext()) {
-			ret = it.next().fullResolve(local);
+	public boolean fullResolve(HierarchicalScope<Declaration> _scope) {
+		boolean result = true;
+		for (Instruction _instruction : this.instructions) {
+			result = result && _instruction.fullResolve(tds);
 		}
-		return ret;
+		return result;
 	}
 
 	/**
@@ -107,12 +92,25 @@ public class Block {
 	 * @return Synthesized True if the instruction is well typed, False if not.
 	 */	
 	public boolean checkType() {
-		boolean ret = true;
-		Iterator<Instruction> it = this.instructions.iterator();
-		while (ret && it.hasNext()) {
-			ret = it.next().checkType();
+		boolean result = true;
+		for (Instruction _instruction : this.instructions) {
+			result = result && _instruction.checkType();
 		}
-		return ret;
+		return result;
+	}
+
+	public Type returnsTo() {
+		Type typeReturn = AtomicType.VoidType;
+		
+		for (Instruction i : this.instructions) {
+			Type result = i.returnsTo();
+			if (typeReturn.equalsTo(AtomicType.VoidType)){
+				typeReturn = result;
+			} else if (!(result.equalsTo(typeReturn) || result.equalsTo(AtomicType.VoidType))) {
+				Logger.error("Plusieurs type retournés");
+			}
+		}
+		return typeReturn;
 	}
 
 	/**
@@ -122,14 +120,13 @@ public class Block {
 	 * @param _offset Inherited Current offset for the address of the variables.
 	 */	
 	public void allocateMemory(Register _register, int _offset) {
-		int depl = _offset;
-		this.register = _register;
-		this.offset = _offset;
+		int dep = _offset;
 		this.size = 0;
+		this.offset = _offset;
 		for (Instruction i : this.instructions) {
-			depl = i.allocateMemory(_register, depl);
+			dep += i.allocateMemory(_register, dep);
 		}
-		this.size = depl - _offset;
+		this.size = dep - _offset;
 	}
 
 	/**
@@ -138,6 +135,15 @@ public class Block {
 	 * @param _factory Inherited Factory to build AST nodes for TAM code.
 	 * @return Synthesized AST for the generated TAM code.
 	 */
+	public Fragment getCode(TAMFactory _factory) {
+		Fragment _result = _factory.createFragment();
+		for (Instruction _instruction : this.instructions) {
+			_result.append(_instruction.getCode(_factory));
+		}
+		_result.add(_factory.createPop(this.offset, this.size));
+		return _result;
+	}
+	/*
 	public Fragment getCode(TAMFactory _factory) {
 		Fragment frag = _factory.createFragment();
 		for (Instruction i : this.instructions) {
@@ -150,26 +156,6 @@ public class Block {
 		}
 		return frag;
 	}
+	*/
 
-	/**
-	 * Allows for the returns to know what is the return type of the function.
-	 */
-	public Type returnsTo() {
-		Type returnType = AtomicType.VoidType;
-		Type instruType = AtomicType.VoidType;
-		for (Instruction i : this.instructions) {
-			instruType = i.returnsTo();
-			if (returnType.equalsTo(AtomicType.VoidType)) {
-				// Le type de retour n'est pas initialisé donc on l'initialise
-				returnType = instruType;
-			} else if (!returnType.equalsTo(AtomicType.VoidType) && !instruType.equalsTo(AtomicType.VoidType)) {
-				// Il y a déjà un type de retour et pourtant l'instruction en a un
-				Logger.error("Il y a plusieurs types de retour dans ce block");
-				return AtomicType.ErrorType;
-			}
-		}
-		return returnType;
-	}
-	
-	
 }

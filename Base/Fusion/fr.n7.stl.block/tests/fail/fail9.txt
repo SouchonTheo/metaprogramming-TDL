@@ -1,0 +1,5 @@
+//AbstractConversion ligne 93, ligne 63 n'est pas accessible grâce à cela.
+fail9{
+    String x = "2.5";
+    int y = (point) x;
+}

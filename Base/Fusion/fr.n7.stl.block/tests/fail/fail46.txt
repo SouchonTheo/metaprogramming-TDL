@@ -1,0 +1,8 @@
+//Block ligne 111
+test44{
+    int pgcd() {
+        return 1;
+        return 2.0;
+    }
+    int i = pgcd();
+}
