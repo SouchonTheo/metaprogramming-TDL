@@ -1,0 +1,137 @@
+PUSH 1
+LOADL 1
+STORE (1) 0[SB]
+PUSH 1
+LOADA 0[SB]
+STORE (1) 1[SB]
+LOADL 50
+LOAD (1) 1[SB]
+STOREI (1)
+PUSH 1
+LOADL 2
+STORE (1) 4[SB]
+PUSH 2
+;< 3, 4>
+LOADL 3
+LOADL 4
+STORE (2) 9[SB]
+PUSH 3
+;< 5, p>
+LOADL 5
+;fr.n7.stl.block.ast.expression.accessible.VariableAccess@58372a00
+LOAD (2) 9[SB]
+STORE (3) 20[SB]
+PUSH 1
+;fr.n7.stl.block.ast.expression.accessible.VariableAccess@4dd8dc3
+LOAD (2) 9[SB]
+POP (0) 1
+STORE (1) 43[SB]
+;fr.n7.stl.block.ast.expression.accessible.VariableAccess@6d03e736
+;(i < 5)
+LOAD (1) 0[SB]
+LOADI (1)
+LOADL 5
+SUBR ILss
+JUMPIF (0) else1
+PUSH 1
+LOADL 5
+STORE (1) 87[SB]
+;fr.n7.stl.block.ast.expression.accessible.VariableAccess@378bf509
+;(i * (sndp))
+LOAD (1) 0[SB]
+LOADI (1)
+;fr.n7.stl.block.ast.expression.accessible.VariableAccess@5fd0d5ae
+LOAD (2) 9[SB]
+POP (1) 1
+SUBR IMul
+STORE (1) 87[SB]
+;fr.n7.stl.block.ast.expression.accessible.VariableAccess@2d98a335
+;(j + 1)
+LOAD (1) 87[SB]
+LOADI (1)
+LOADL 1
+SUBR IAdd
+STORE (1) 0[SB]
+;fr.n7.stl.block.ast.expression.accessible.VariableAccess@16b98e56
+;(k < 10)
+begin2
+LOAD (1) 43[SB]
+LOADI (1)
+LOADL 10
+SUBR ILss
+JUMPIF (0) end2
+PUSH 1
+LOADL 3
+STORE (1) 177[SB]
+;fr.n7.stl.block.ast.expression.accessible.VariableAccess@7ef20235
+;(k + i)
+;((k + i) - p)
+LOAD (1) 43[SB]
+LOADI (1)
+;fr.n7.stl.block.ast.expression.accessible.VariableAccess@27d6c5e0
+LOAD (1) 0[SB]
+LOADI (1)
+SUBR IAdd
+;fr.n7.stl.block.ast.expression.accessible.VariableAccess@4f3f5b24
+LOAD (1) 177[SB]
+LOADI (1)
+SUBR ISub
+STORE (1) 43[SB]
+POP (177) 179
+JUMP begin2
+end2
+POP (87) 267
+JUMP end1
+else1
+;fr.n7.stl.block.ast.expression.accessible.VariableAccess@15aeb7ab
+;(i + j)
+;((i + j) > 10)
+LOAD (1) 0[SB]
+LOADI (1)
+;fr.n7.stl.block.ast.expression.accessible.VariableAccess@7b23ec81
+LOAD (1) 4[SB]
+LOADI (1)
+SUBR IAdd
+LOADL 10
+SUBR IGtr
+JUMPIF (0) else3
+PUSH 1
+LOADL 0
+STORE (1) 87[SB]
+POP (87) 88
+JUMP end3
+end3
+POP (87) 87
+end1
+PUSH 1
+LOADL 5
+LOADL 1
+SUBR IMul
+SUBR MAlloc
+STORE (1) 174[SB]
+LOADL 5
+LOAD (1) 174[SB]
+LOADL 4
+LOADL 1
+SUBR IMul
+SUBR IAdd
+STOREI (1)
+LOADL 5
+LOAD (1) 174[SB]
+LOADL 3
+LOADL 1
+SUBR IMul
+SUBR IAdd
+STOREI (1)
+PUSH 1
+;(1597463007 - (i + 2))
+LOADL 1597463007
+;fr.n7.stl.block.ast.expression.accessible.VariableAccess@6acbcfc0
+;(i + 2)
+LOAD (1) 0[SB]
+LOADI (1)
+LOADL 2
+SUBR IAdd
+SUBR ISub
+STORE (1) 351[SB]
+POP (0) 703

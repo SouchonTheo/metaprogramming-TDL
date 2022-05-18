@@ -1,0 +1,5 @@
+//NamedType ligne 129
+test44{
+    int i = 5;
+    i j  = 6;
+}

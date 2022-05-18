@@ -1,0 +1,11 @@
+//AbstractField ligne 88
+test11{
+	typedef enum bizarre{
+		ETRANGE,
+		BIZZARROIDE,
+		LOUCHE,
+		SPATULE
+	} Bizzarre;
+
+	Bizzarre bv = Bizzarre.STRANGE;
+}

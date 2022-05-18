@@ -1,0 +1,5 @@
+//TypeDeclaration ligne 58
+test37{
+    typedef int Integer;
+    typedef int Integer;
+}

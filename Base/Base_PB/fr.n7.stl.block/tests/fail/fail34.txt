@@ -1,0 +1,4 @@
+//Constant Declaration ligne 112
+test34{
+    const int i = 5.0;
+}

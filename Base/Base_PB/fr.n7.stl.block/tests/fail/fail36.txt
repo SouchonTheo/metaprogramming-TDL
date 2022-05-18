@@ -1,0 +1,10 @@
+//FonctionDeclaration ligne 130
+test36{
+    int pgcd(int x, int y) {
+        return 5;
+    }
+    int pgcd(int x, int y) {
+        return 5;
+    }
+    print pgcd(4,3);
+}
