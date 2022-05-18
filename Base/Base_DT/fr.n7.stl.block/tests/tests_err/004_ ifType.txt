@@ -1,0 +1,5 @@
+test {
+    if ("toto") {
+        return "toto";
+    }
+}

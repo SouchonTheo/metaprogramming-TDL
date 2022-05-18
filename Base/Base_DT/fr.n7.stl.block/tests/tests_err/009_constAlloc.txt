@@ -1,0 +1,4 @@
+test {
+    const int i = 0;
+    i = 2;
+}

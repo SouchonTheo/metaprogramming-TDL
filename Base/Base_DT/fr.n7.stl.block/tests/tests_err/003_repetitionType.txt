@@ -1,0 +1,5 @@
+test {
+    while (0) {
+        return "toto";
+    }
+}

@@ -1,0 +1,4 @@
+test {
+	int i = new int[2];
+	i[1] = 1;
+}

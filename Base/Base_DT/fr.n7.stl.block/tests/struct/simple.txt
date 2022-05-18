@@ -1,0 +1,5 @@
+test {
+	struct Test { int c ; } r = { 0 };
+	i = r.c;
+	r.c = i;
+}

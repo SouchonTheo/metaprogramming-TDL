@@ -1,0 +1,5 @@
+test {
+	int tab[] = {1, 2};
+	int x = tab[1];
+	tab[2] = 30;
+}

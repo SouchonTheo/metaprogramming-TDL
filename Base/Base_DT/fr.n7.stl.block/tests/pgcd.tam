@@ -1,0 +1,93 @@
+; Gestion de la constante : variable non modifiable
+PUSH 1
+LOADL 0
+STORE (1) 0[SB]
+; Enregistrement des paramètres au dessus de la pile
+LOADL 47
+LOADL 53
+; On appelle la fonction, son code est juste après
+CALL (SB) pgcd
+pgcd
+PUSH 1
+LOAD (2) -2[LB]
+POP (0) 1
+STORE (1) 3[LB]
+PUSH 1
+LOAD (2) -2[LB]
+POP (1) 1
+STORE (1) 4[LB]
+;(a * b)
+;((a * b) != test)
+etiq_debut_tantque_1
+; On fait des LOADA puis LOADI plutot que des LOAD
+LOADA 3[LB]
+LOADI (1)
+LOADA 4[LB]
+LOADI (1)
+SUBR IMul
+PUSH 1
+LOADL 0
+STORE (1) 0[SB]
+LOADI (1)
+SUBR INeq
+JUMPIF (0) etiq_fin_tantque_1
+;(a > b)
+LOADA 3[LB]
+LOADI (1)
+LOADA 4[LB]
+LOADI (1)
+SUBR IGtr
+JUMPIF (0) etiq_sinon_conditionnelle_2
+PUSH 1
+;(a - b)
+LOADA 3[LB]
+LOADI (1)
+LOADA 4[LB]
+LOADI (1)
+SUBR ISub
+STORE (1) 5[LB]
+LOADA 5[LB]
+LOADI (1)
+STORE (1) 3[LB]
+; Les pop libèrent la pile utilisée par le bloc (ici 0)
+POP (5) 0
+JUMP etiq_fin_conditionnelle_2
+etiq_sinon_conditionnelle_2
+PUSH 1
+;(b - a)
+LOADA 4[LB]
+LOADI (1)
+LOADA 3[LB]
+LOADI (1)
+SUBR ISub
+STORE (1) 5[LB]
+LOADA 5[LB]
+LOADI (1)
+STORE (1) 4[LB]
+POP (5) 0
+etiq_fin_conditionnelle_2
+POP (5) 0
+JUMP etiq_debut_tantque_1
+etiq_fin_tantque_1
+PUSH 1
+LOADA 3[LB]
+STORE (1) 5[LB]
+;(res == test)
+LOADA 5[LB]
+LOADI (1)
+PUSH 1
+LOADL 0
+STORE (1) 0[SB]
+LOADI (1)
+SUBR IEq
+JUMPIF (0) etiq_fin_conditionnelle_3
+LOADA 4[LB]
+LOADI (1)
+STORE (1) 5[LB]
+POP (6) 0
+etiq_fin_conditionnelle_3
+LOADA 5[LB]
+RETURN (1) 0
+POP (3) 0
+SUBR IOut
+POP (0) 0

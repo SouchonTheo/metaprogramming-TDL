@@ -1,0 +1,42 @@
+test {
+   	int i = 1;
+
+	<int, int> paire = <i, 3>;
+
+	float j = fst paire; 
+	int k = snd paire;
+
+	struct Test { int c ; } r = { 0 };
+
+
+	int *p = &i;
+
+	int *newPoint = new int();
+	j = *p;
+
+	p = &k;
+	
+	while (i < 10) {
+		if (i > 5) {
+			i = i + 2;
+		} else {
+			i = i + 1;
+		}
+		if (i> 5) {
+			print i;
+		}
+	}
+
+	int t[] = new int[2];
+	t[1] = 1;
+	t[0] = 12;
+	i = t[0];
+
+	int x = i > 5 ? 4 : 2;
+
+	int fonc(int k) {
+        return 0;
+    }
+
+    print fonc(1);
+}

@@ -1,0 +1,6 @@
+test {
+    int fonc(int k) {
+        return 0;
+    }
+    print fonc(1 , 1);
+}

@@ -1,0 +1,5 @@
+test {
+    int test() {
+        return "toto";
+    }
+}

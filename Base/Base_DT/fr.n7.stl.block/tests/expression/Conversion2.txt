@@ -1,0 +1,4 @@
+test {
+	// Création d'un type toto
+	toto i = (toto) true;
+}

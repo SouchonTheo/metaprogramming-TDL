@@ -1,0 +1,3 @@
+test {
+	enum saisons { PRINTEMPS, ETE, AUTOMNE, HIVER} ete = saisons.ETE;
+}
