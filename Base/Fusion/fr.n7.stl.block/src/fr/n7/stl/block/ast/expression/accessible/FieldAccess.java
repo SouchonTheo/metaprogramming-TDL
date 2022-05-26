@@ -2,12 +2,12 @@
  * 
  */
 package fr.n7.stl.block.ast.expression.accessible;
-import java.util.LinkedList;
-import java.util.List;
 
 import fr.n7.stl.block.ast.expression.AbstractField;
 import fr.n7.stl.block.ast.expression.Expression;
+import fr.n7.stl.block.ast.type.NamedType;
 import fr.n7.stl.block.ast.type.RecordType;
+import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.block.ast.type.declaration.FieldDeclaration;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.TAMFactory;
@@ -33,45 +33,29 @@ public class FieldAccess extends AbstractField {
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
-		Fragment _result = _factory.createFragment();
-		RecordType rec = (RecordType) this.record.getType();
-		List<FieldDeclaration> fields = rec.getFields();
-		List<String> names = new LinkedList<String>();
-		for (FieldDeclaration f : fields){
-			names.add(f.getName());
-		} 
-		int pos = names.indexOf(this.name);
-		int size = rec.getFields().size();
-		int sizeField = this.field.getType().length();
-
-		_result.append(this.record.getCode(_factory));
-		_result.add(_factory.createPop(0,(size-pos)*sizeField));
-		_result.add(_factory.createPop(sizeField,(pos-1)*sizeField));
-		return _result; 
-	}
-
-	/* (non-Javadoc)
-	int depl = 0;
-	int size = 0;
-	Type realType = this.record.getType();
-	if (realType instanceof NamedType) {
-		realType = ((NamedType) this.record.getType()).getType();
-	}
-	RecordType type = (RecordType) realType;
-	for (FieldDeclaration field : type.getFields()) {
-		if (!field.getName().equals(this.name)) {
-			System.out.println("fields diff : " + field);
-			depl += field.getType().length();
-		} else {
-			System.out.println("fields eg : " + field);
-			size = field.getType().length();
-			break;
+		Type realType = this.record.getType();
+		if (realType instanceof NamedType) {
+			realType = ((NamedType) this.record.getType()).getType();
 		}
+		RecordType rec = (RecordType) realType;
+		
+		int deplToField = 0;
+		int totalDepl = 0;
+		int fieldSize = 0;
+		for (FieldDeclaration f : rec.getFields()){
+			if (f.getName().equals(this.field.getName())) {
+				fieldSize = f.getType().length();
+				deplToField = totalDepl;
+			} else {
+				totalDepl += f.getType().length();
+			}
+		}
+		Fragment _result = _factory.createFragment();
+		// On ajoute tout le record
+		_result.append(this.record.getCode(_factory));
+		// On enlève ce qu'il y a en dessous et au dessus
+		_result.add(_factory.createPop(0,deplToField));
+		_result.add(_factory.createPop(fieldSize, totalDepl - deplToField - fieldSize));
+		return _result;
 	}
-	Fragment frag = _factory.createFragment();
-	System.out.println(this.record.getClass());
-	//frag.add(_factory.createLoad(record.register, record.offset + depl, size));
-	return frag;
-	*/
-
 }

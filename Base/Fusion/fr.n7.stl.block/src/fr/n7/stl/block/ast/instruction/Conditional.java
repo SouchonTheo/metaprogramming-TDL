@@ -153,21 +153,4 @@ public class Conditional implements Instruction {
 		frag.addSuffix(labelEnd);
 		return frag;
 	}
-	/*
-	@Override
-	public Fragment getCode(TAMFactory _factory) {
-		Fragment _result = _factory.createFragment();
-		int num = _factory.createLabelNumber();
-		_result.append(this.condition.getCode(_factory));
-		_result.add(_factory.createJumpIf("else" + num, 0));
-		_result.append(this.thenBranch.getCode(_factory));
-		_result.add(_factory.createJump("end" + num));
-		if (elseBranch != null) {
-			_result.addSuffix("else" + num);
-			_result.append(this.elseBranch.getCode(_factory));
-		}
-		_result.addSuffix("end" + num);
-		return _result;
-	}
-	*/
 }

@@ -34,8 +34,8 @@ public class ArrayAssignment extends AbstractArray implements AssignableExpressi
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
 		Fragment _result = _factory.createFragment();
-		int s = this.array.getType().length();
-		IntegerValue i = (IntegerValue) this.index;
+		int elementSize = this.array.getType().length();
+		IntegerValue realIndex = (IntegerValue) this.index;
 		VariableAssignment va = (VariableAssignment) this.array;
 		if (va.declaration instanceof VariableDeclaration) {
 			VariableDeclaration d = (VariableDeclaration) va.declaration;
@@ -46,30 +46,11 @@ public class ArrayAssignment extends AbstractArray implements AssignableExpressi
 		} else if(va.declaration instanceof ParameterDeclaration) {
 			Logger.error("ParameterDeclaration not implemented yet.");
 		}
-		_result.add(_factory.createLoadL(i.getValue()));
-		_result.add(_factory.createLoadL(s));
+		_result.add(_factory.createLoadL(realIndex.getValue()));
+		_result.add(_factory.createLoadL(elementSize));
 		_result.add(TAMFactory.createBinaryOperator(BinaryOperator.Multiply));
 		_result.add(TAMFactory.createBinaryOperator(BinaryOperator.Add));
-		_result.add(_factory.createStoreI(s));
+		_result.add(_factory.createStoreI(elementSize));
 		return _result;
 	}
-
-	/* (non-Javadoc)
-	@Override
-	public Fragment getCode(TAMFactory _factory) {
-		int elementSize = this.array.getType().length();
-		Fragment frag = _factory.createFragment();
-		VariableAssignment realArray = (VariableAssignment) this.array;
-		frag.add(_factory.createLoad(realArray.declaration.getRegister(), realArray.declaration.getOffset(), realArray.declaration.getType().length()));
-		IntegerValue realIndex = (IntegerValue) this.index;
-		frag.add(_factory.createLoadL(realIndex.getValue()));
-		frag.add(_factory.createLoadL(elementSize));
-		frag.add(TAMFactory.createBinaryOperator(BinaryOperator.Multiply));
-		frag.add(TAMFactory.createBinaryOperator(BinaryOperator.Add));
-		frag.add(_factory.createStoreI(elementSize));
-		return frag;
-	}
-	*/
-
-	
 }

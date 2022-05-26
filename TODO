@@ -1,37 +1,29 @@
 (TODO)
 ? = to merge
+~ = pas sûr mais normalement OK
+f = revoir par rapport aux fonctions
+
 
 /Expression
     /Accessible:
-        - FieldAccess
         - ParameterAccess ?
-        
-    /Allocation:
-        - PointerAllocation ?
-        
-    /Assignable:
-        - ArrayAssignment ?
-        - FieldAssignment
-        - PointerAssignment ?
-        - VariableAssignment ?
 
-    - AbstractConversion
-    - FunctionCall ?
+    /Assignable:
+        - ArrayAssignment f
+        - PointerAssignment f
+        - VariableAssignment f
+
+    - FunctionCall f
     
 /Instruction
     /Declaration:
-        - FunctionDeclaration ?
-        - TypeDeclaration ?
-        - Conditionnal ?
-        - Repetition ?
-        - Printer ? (alocateMemory offset)
-        - Return ?
+        - FunctionDeclaration f
+        - Return f
         
 /Type
-    - ArrayType ? (length)
-    - EnumerationType (merge/length)
-    - FunctionType (merge/length)
-    - PointerType (merge/length)
-    - RecordType (merge)
+    - ArrayType ~ (length)
+    - EnumerationType ~ (length)
+    - FunctionType (merge/length) f
+    - PointerType ~ (length)
     
-- Block ?
+- Block f

@@ -3,9 +3,13 @@
  */
 package fr.n7.stl.block.ast.expression.assignable;
 
-import fr.n7.stl.block.ast.SemanticsUndefinedException;
 import fr.n7.stl.block.ast.expression.AbstractField;
+import fr.n7.stl.block.ast.type.NamedType;
+import fr.n7.stl.block.ast.type.RecordType;
+import fr.n7.stl.block.ast.type.Type;
+import fr.n7.stl.block.ast.type.declaration.FieldDeclaration;
 import fr.n7.stl.tam.ast.Fragment;
+import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
 
 /**
@@ -29,7 +33,25 @@ public class FieldAssignment extends AbstractField implements AssignableExpressi
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
-		throw new SemanticsUndefinedException("Semantics getCode undefined in FieldAssignment.");
+		Type realType = this.record.getType();
+		if (realType instanceof NamedType) {
+			realType = ((NamedType) this.record.getType()).getType();
+		}
+		RecordType rec = (RecordType) realType;
+
+		int deplToField = 0;
+		int fieldSize = 0;
+		for (FieldDeclaration f : rec.getFields()) {
+			if (f.getName().equals(this.field.getName())) {
+				fieldSize = f.getType().length();
+				break;
+			} else {
+				deplToField += f.getType().length();
+			}
+		}
+
+		Fragment _result = _factory.createFragment();
+		_result.add(_factory.createStore(Register.SB, deplToField, fieldSize));
+		return _result;
 	}
-	
 }

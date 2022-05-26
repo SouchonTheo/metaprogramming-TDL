@@ -97,28 +97,11 @@ public class Iteration implements Instruction {
 		String labelEnd = "etiq_fin_tantque_" + num;
 		frag.append(this.condition.getCode(_factory));
 		frag.addPrefix(labelStart);
+		frag.add(_factory.createJumpIf(labelEnd, 0));
 		Fragment block = this.body.getCode(_factory);
 		block.add(_factory.createJump(labelStart));
-		frag.add(_factory.createJumpIf(labelEnd, 0));
 		frag.append(block);
 		frag.addSuffix(labelEnd);
 		return frag;
 	}
-
-	/*
-	@Override
-	public Fragment getCode(TAMFactory _factory) {
-		Fragment _result = _factory.createFragment();
-		int num = _factory.createLabelNumber();
-		_result.append(this.condition.getCode(_factory));
-		_result.addPrefix("begin"+num);
-		_result.add(_factory.createJumpIf("end"+num, 0));
-		_result.append(this.body.getCode(_factory));
-		_result.add(_factory.createJump("begin"+num));
-		_result.addSuffix("end"+num);
-		return _result;
-	}
-	*/
-	
-
 }

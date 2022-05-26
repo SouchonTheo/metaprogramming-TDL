@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.n7.stl.block.ast.expression.allocation;
 
 import fr.n7.stl.block.ast.expression.Expression;
@@ -66,5 +63,4 @@ public class PointerAllocation implements Expression {
 		fragment.add(Library.MAlloc);
 		return fragment;
 	}
-
 }

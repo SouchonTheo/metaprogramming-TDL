@@ -45,17 +45,5 @@ public class PointerAssignment extends AbstractPointer implements AssignableExpr
 		}
 		_result.add(_factory.createStoreI(s));
 		return _result;
-	}
-
-	/* (non-Javadoc)
-	@Override
-	public Fragment getCode(TAMFactory _factory) {
-		Fragment frag = _factory.createFragment();
-		VariableAssignment realPointer = (VariableAssignment) this.pointer;
-		frag.add(_factory.createLoad(realPointer.declaration.getRegister(), realPointer.declaration.getOffset(), realPointer.declaration.getType().length()));
-		frag.add(_factory.createStoreI(this.pointer.getType().length()));
-		return frag;
-	}
-	*/
-	
+	}	
 }

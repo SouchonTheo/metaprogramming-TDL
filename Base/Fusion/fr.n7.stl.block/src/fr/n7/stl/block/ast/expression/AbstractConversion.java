@@ -3,7 +3,6 @@
  */
 package fr.n7.stl.block.ast.expression;
 
-import fr.n7.stl.block.ast.SemanticsUndefinedException;
 import fr.n7.stl.block.ast.instruction.declaration.TypeDeclaration;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
@@ -100,7 +99,7 @@ public abstract class AbstractConversion<TargetType extends Expression> implemen
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
-		throw new SemanticsUndefinedException("Semantics getCode undefined in TypeConversion.");
+		return _factory.createFragment();
 	}
 
 }

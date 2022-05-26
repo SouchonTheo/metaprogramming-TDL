@@ -66,7 +66,7 @@ public class Return implements Instruction {
 	 */
 	@Override
 	public int allocateMemory(Register _register, int _offset) {
-		return 0; // offset ?
+		return 0;
 	}
 
 	/* (non-Javadoc)

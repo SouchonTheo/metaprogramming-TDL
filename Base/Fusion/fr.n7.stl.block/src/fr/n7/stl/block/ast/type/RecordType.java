@@ -12,6 +12,7 @@ import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
 import fr.n7.stl.block.ast.scope.Scope;
 import fr.n7.stl.block.ast.type.declaration.FieldDeclaration;
+import fr.n7.stl.util.Logger;
 
 /**
  * Implementation of the Abstract Syntax Tree node for a record type.
@@ -116,7 +117,6 @@ public class RecordType implements Type, Declaration, Scope<FieldDeclaration> {
 	 */
 	@Override
 	public Type merge(Type _other) {
-		// A verifier
 		Type otherType = _other;
 		if (otherType instanceof NamedType) {
 			otherType = ((NamedType) _other).getType();
@@ -130,6 +130,7 @@ public class RecordType implements Type, Declaration, Scope<FieldDeclaration> {
 			}
 			return new RecordType(this.name, list);
 		} else {
+			Logger.error("Types incompatibles");
 			return AtomicType.ErrorType;
 		}
 	}

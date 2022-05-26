@@ -86,16 +86,4 @@ public class VariableAssignment extends AbstractIdentifier implements Assignable
 		}
 		return _result;
 	}
-
-
-	/* (non-Javadoc)
-	@Override
-	public Fragment getCode(TAMFactory _factory) {
-		Fragment frag = _factory.createFragment();
-		frag.add(_factory.createLoadI(this.declaration.getType().length()));
-		frag.add(_factory.createStore(this.declaration.getRegister(), this.declaration.getOffset(), this.declaration.getType().length()));
-		return frag;
-	}
-	*/
-
 }

@@ -6,10 +6,10 @@ package fr.n7.stl.block.ast.type;
 import java.util.Iterator;
 import java.util.List;
 
-import fr.n7.stl.block.ast.SemanticsUndefinedException;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
 import fr.n7.stl.block.ast.type.declaration.LabelDeclaration;
+import fr.n7.stl.util.Logger;
 
 /**
  * @author Marc Pantel
@@ -95,7 +95,12 @@ public class EnumerationType implements Type, Declaration{
 	 */
 	@Override
 	public Type merge(Type _other) {
-		throw new SemanticsUndefinedException("Semantics merge is not implemented in EnumerationType.");
+		if ((_other instanceof EnumerationType) || (_other instanceof NamedType && _other.compatibleWith(this))) {
+			return this;
+		} else {
+			Logger.error("Error : Type not EnumerationType or NamedType type");
+			return AtomicType.ErrorType;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -103,7 +108,7 @@ public class EnumerationType implements Type, Declaration{
 	 */
 	@Override
 	public int length() {
-		throw new SemanticsUndefinedException("Semantics length is not implemented in EnumerationType.");
+		return this.labels.size(); 
 	}
 	
 	/* (non-Javadoc)
@@ -128,6 +133,10 @@ public class EnumerationType implements Type, Declaration{
 	@Override
 	public Type getType() {
 		return this;
+	}
+
+	public List<LabelDeclaration> getLabels() {
+		return this.labels;
 	}
 
 	public boolean contains(String _name) {

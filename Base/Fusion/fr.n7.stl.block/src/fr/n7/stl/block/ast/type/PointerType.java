@@ -5,6 +5,7 @@ package fr.n7.stl.block.ast.type;
 
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
+import fr.n7.stl.util.Logger;
 
 /**
  * Implementation of the Abstract Syntax Tree node for a pointer type.
@@ -61,13 +62,12 @@ public class PointerType implements Type {
 	 */
 	@Override
 	public Type merge(Type _other) {
-		// A vérifier
-		if (_other instanceof PointerType) {
+		if ((_other instanceof PointerType) || (_other instanceof NamedType && _other.compatibleWith(this))) {
 			PointerType other = (PointerType) _other;
-			return this.getPointedType().merge(other.getPointedType());
+			return new PointerType(this.getPointedType().merge(other.getPointedType()));
 		} else {
-			System.out.println("Types non égaux");
-			return AtomicType.VoidType;
+			Logger.error("Types non compatibles");
+			return AtomicType.ErrorType;
 		}
 	}
 
@@ -76,7 +76,7 @@ public class PointerType implements Type {
 	 */
 	@Override
 	public int length() {
-		return 1; // ?
+		return 1;
 	}
 
 	/* (non-Javadoc)
