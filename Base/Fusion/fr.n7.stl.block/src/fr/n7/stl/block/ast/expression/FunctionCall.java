@@ -79,6 +79,7 @@ public class FunctionCall implements Expression {
 			}
 			return result;
 		}
+		Logger.error("Function not known");
 		return false;
 	}
 
