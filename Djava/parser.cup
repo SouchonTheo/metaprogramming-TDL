@@ -101,7 +101,7 @@ non terminal							SingleInherits, MultipleInherits, Implements;
 non terminal							ClassElements, InterfaceElements, Instances;
 non terminal							Instance, ClassElement, InterfaceElement;
 non terminal							 Attribute, Signature, Method, Constructor, ConstructorPrelude;
-non terminal							AccessRight, ElementNature;
+non terminal							AccessRight;
 
 /* Associativité et Priorité relative des opérateurs (du moins prioritaire au plus prioritaire) */
 /* Opérateur le moins prioritiaire */
@@ -155,231 +155,305 @@ Program ::= /* retrait miniJava
 		;
 
 /* ajout miniJava : classes, interfaces, attributs, méthodes, constructeurs, etc */
-Elements ::= Main
+Elements ::= Main:main
 		{:
+			Programme _elements = new Programme();
+			_elements.addPrincipalClass(main);
+			RESULT = _elements;
 		:}
-		| Interface Elements
+		| Interface:interface Elements:elements
 		{:
+			elements.addInterface(interface);
+			RESULT = elements;
 		:}
-		| Class Elements
+		/*On met un e à classe pour éviter les problèmes avec le mot clef class*/
+		| Class:classe Elements:elements
 		{:
+			elements.addClass(classe);
+			RESULT = elements;
 		:}
-		| UL_Abstrait Class Elements
+		| UL_Abstrait Class:classe Elements:elements
 		{:
+			classe.setAbstract();
+			elements.addClass(classe);
+			RESULT = elements;
 		:}
-		| UL_Definitif Class Elements
+		| UL_Definitif Class:classe Elements:elements
 		{:
+			classe.setFinal();
+			elements.addClass(classe);
+			RESULT = elements;
 		:}
 		;
 		
-Interface ::= UL_Interface UL_Identificateur Generics MultipleInherits 
-		UL_Accolade_Ouvrante InterfaceElements UL_Accolade_Fermante
+Interface ::= UL_Interface UL_Identificateur Generics:generiques MultipleInherits:heritages
+		UL_Accolade_Ouvrante InterfaceElements:interfaceElements UL_Accolade_Fermante
 		{:
+			RESULT = new Interface(generiques,heritages,interfaceElements);
 		:}
 		;
 		
-Class ::= UL_Classe UL_Identificateur Generics SingleInherits Implements 
-		UL_Accolade_Ouvrante ClassElements UL_Accolade_Fermante
+Class ::= UL_Classe UL_Identificateur Generics:generiques SingleInherits:heritage Implements:interfaces
+		UL_Accolade_Ouvrante ClassElements:classeElements UL_Accolade_Fermante
 		{:
+			RESULT = new Class(generiques, heritage, interfaces, classeElements);
 		:}
 		;
 		
 Main ::= UL_Public UL_Classe UL_Classe_Principale
 		UL_Accolade_Ouvrante 
 			UL_Public UL_De_Classe UL_Type_Vide UL_Methode_Principale 
-			UL_Parenthese_Ouvrante Parameters UL_Parenthese_Fermante Block UL_Accolade_Fermante
+			UL_Parenthese_Ouvrante Parameters:parameters UL_Parenthese_Fermante Block:block UL_Accolade_Fermante
 		{:
+			RESULT = new Main(parameters,block);
 		:}
 		;
 		
 Generics ::= /* Lambda */
+		/*Pour avoir simplement une itération vide sur une liste plutôt que de devoir différencier le cas null*/
 		{:
+			RESULT = new LinkedList<TypeParameter>();
 		:}
 		|
-		UL_Inferieur TypeParameters UL_Superieur
+		UL_Inferieur TypeParameters:typeParameters UL_Superieur
 		{:
+			RESULT = typeParameters;
 		:}
 		;
 		
-TypeParameter ::= UL_Identificateur 
+TypeParameter ::= UL_Identificateur:etiquette
 		{:
+			RESULT = new TypeParameter(etiquette);
 		:}
-		| UL_Identificateur UL_Herite Constraints
+		| UL_Identificateur:etiquette UL_Herite Constraints:contraintes
 		{:
-		:}
-		;
-		
-Constraints ::= Instance
-		{:
-		:}
-		| Instance UL_Esperluette Constraints
-		{:
+			RESULT = new TypeParameter(etiquette,contraintes);
 		:}
 		;
 		
-TypeParameters ::= TypeParameter
+Constraints ::= Instance:instance
 		{:
+			List<Intance> _contraintes = new LinkedList<Instance>();
+			_contraintes.add(instance);
+			RESULT = _contraintes;
 		:}
-		| TypeParameter UL_Virgule TypeParameters
+		| Instance:instance UL_Esperluette Constraints:contraintes
 		{:
+			contraintes.add(instance);
+			RESULT = contraintes;
+		:}
+		;
+		
+TypeParameters ::= TypeParameter:typeParameter
+		{:
+			List<TypeParameter> _typeParameters = new LinkedList<TypeParameter>();
+			_contraintes.add(typeParameter);
+			RESULT = _typeParameters;
+		:}
+		| TypeParameter:typeParameter UL_Virgule TypeParameters:typeParameters
+		{:
+			typeParameters.add(typeParameter);
+			RESULT = typeParameters;
 		:}
 		;
 				
 SingleInherits ::= /* Lambda */
 		{:
+			RESULT = null;
 		:}
 		|
-		UL_Herite Instance
+		UL_Herite Instance:instance
 		{:
+			RESULT = instance
 		:}
 		;
 		
 MultipleInherits ::= /* Lambda */
 		{:
+			RESULT = new LinkedList<Instance>();
 		:}
 		|
-		UL_Herite Instances
+		UL_Herite Instances:instances
 		{:
+			RESULT = instances;		
 		:}
 		;
 		
 		
 Implements ::= /* Lambda */
 		{:
+			RESULT = new LinkedList<Instance>();		
 		:}
 		|
-		UL_Realise Instances
+		UL_Realise Instances:instances
 		{:
+			RESULT = instances;	
 		:}
 		;
 		
-Instances ::= Instance UL_Virgule Instances
+Instances ::= Instance:instance UL_Virgule Instances:instances
 		{:
+			instances.add(instance);
+			Result = instances;
 		:}
 		|
-		Instance
+		Instance:instance
 		{:
+			List<Instance> _instances = new LinkedList<Instance>();
+			_instances.add(instance);
+			RESULT = _instances;
 		:}
 		;
 		
-Instance ::= UL_Identificateur
+Instance ::= UL_Identificateur:etiquette
 		{:
+			RESULT = new Instance(etiquette);
 		:}
-		| Instance UL_Inferieur Instances UL_Superieur
+		| Instance:instance UL_Inferieur Instances:instances UL_Superieur
 		{:
+			instance.addInstances(instances)
+			RESULT = instance;
 		:}
 		;
 		
 ClassElements ::= /* Lambda */
 		{:
+			RESULT = new LinkedList<ClassElement>();
 		:}
-		| AccessRight ClassElement ClassElements
+		| AccessRight:access ClassElement:classElement ClassElements:classElements
 		{:
+			classElement.setAccess(access);
+			classElements.add(classElement);
 		:}
 		;
 		
 InterfaceElements ::= /* Lambda */
 		{:
+			RESULT = new LinkedList<InterfaceElement>();
 		:}
-		| InterfaceElement InterfaceElements
+		| InterfaceElement:InterfaceElement InterfaceElements:interfaceElements
 		{:
+			interfaceElements.add(InterfaceElement);
 		:}
 		;
 		
 AccessRight ::=
 		UL_Public
 		{:
+			RESULT = AccessRight.PUBLIC;
 		:}
 		| UL_Protege
 		{:
+			RESULT = AccessRight.PROTEGE;
 		:}
 		| UL_Prive
 		{:
+			RESULT = AccessRight.PRIVE;
 		:}
-		;
-		
-ElementNature ::=
-		UL_De_Classe
-		{:
-		:}
-		| /* Lambda */
-		{:
-		:}
-		;		
+		;	
 		
 ClassElement ::=
-		Attribute
+		Attribute:attribute
 		{:
+			RESULT = new ClassElement(attribute);
 		:}
 		|
-		Method
+		Method:method
 		{:
+			RESULT = new ClassElement(method);
 		:}
 		|
-		Constructor
+		Constructor:constructor
 		{:
+			RESULT = new ClassElement(constructor);
 		:}
 		;
 		
 InterfaceElement ::=
+	/*On appelle un constructeur pour ne pas avoir à se soucier de l'héritage des classes.*/
 		Signature:entete UL_Point_Virgule
 		{:
+			RESULT = new InterfaceElement(entete);
 		:}
 		;
 
 Attribute ::=
 		Type:type Identifiant:identifiant UL_Point_Virgule
 		{:
+			RESULT = new Attribute(type,identifiant);
 		:}
 		|
 		UL_De_Classe Type:type Identifiant:identifiant UL_Egal Expression:valeur UL_Point_Virgule
 		{:
+			RESULT = new Attribute(type, identifiant, valeur);
 		:}
 		|
 		UL_De_Classe UL_Definitif Type:type Identifiant:identifiant UL_Egal Expression:valeur UL_Point_Virgule
 		{:
+			Attribute attribute = new Attribute(type, identifiant, valeur);
+			attribute.setStatic();
+			RESULT = attibute;
 		:}
 		;
 		
 Method ::=
 		Signature:entete Block:corps
 		{:
+			RESULT = new Methode(entete,corps);
 		:}
 		| 
 		UL_Definitif Signature:entete Block:corps
 		{:
+			Method method = new Methode(entete,corps);
+			Method.setFinal();
+			RESULT = method;
 		:}
 		| 
 		UL_De_Classe Signature:entete Block:corps
 		{:
+			Method method = new Methode(entete,corps);
+			method.setStatic();
+			RESULT = method;
 		:}
 		| 
 		UL_De_Classe UL_Definitif Signature:entete Block:corps
 		{:
+			Method method = new Methode(entete,corps);
+			method.setStatic();
+			method.setFinal();
+			RESULT = method;
 		:}
 		| 
 		UL_Abstrait Signature:entete UL_Point_Virgule
 		{:
+			Method method = new Methode(entete);
+			/*En sit pas nécessaire, car la seule fois où ce constructeur est appelé, mais plus clair*/
+			method.setAbstract();
+			RESULT = method;
 		:}
 		;
 		
 Signature ::=
 		Type:type Identifiant:identifiant UL_Parenthese_Ouvrante Parameters:parametres UL_Parenthese_Fermante
 		{:
+			RESULT = new Signature(type,identifiant, parametres);
 		:}
 		|
 		Type:type Identifiant:identifiant UL_Parenthese_Ouvrante UL_Parenthese_Fermante
 		{:
+			RESULT = new Signature(type,identifiant);
 		:}
 		;
 		
 Constructor ::=
-		UL_Identificateur:nom UL_Parenthese_Ouvrante Parameters:parametres UL_Parenthese_Fermante Block
+		UL_Identificateur:nom UL_Parenthese_Ouvrante Parameters:parametres UL_Parenthese_Fermante Block:block
 		{:
+			RESULT = new COnstructor(nom,parametres,block);
 		:}
 		|
-		UL_Identificateur:nom UL_Parenthese_Ouvrante UL_Parenthese_Fermante Block
+		UL_Identificateur:nom UL_Parenthese_Ouvrante UL_Parenthese_Fermante Block:block
 		{:
+			RESULT = new COnstructor(nom,parametres,block);
 		:}
 		;
 
