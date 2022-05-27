@@ -53,7 +53,6 @@ public class FunctionDeclaration implements Instruction, Declaration {
 	}
 
 	private Register register;
-	private int paramOffset;
 	/**
 	 * AST node for the body of the function
 	 */
@@ -163,16 +162,19 @@ public class FunctionDeclaration implements Instruction, Declaration {
 	 */
 	@Override
 	public int allocateMemory(Register _register, int _offset) {
-		this.register = _register;
+		this.register = Register.LB;
+		// On commence par calculer le déplacement total
+		int depl = 0;
 		for (ParameterDeclaration param : this.parameters) {
-			param.offset = this.paramOffset;
-			this.paramOffset += param.type.length();
+			depl -= param.type.length();
 		}
-		this.body.allocateMemory(Register.LB, this.paramOffset);
-		return _offset;
-
-		//this.body.allocateMemory(_register, _offset);
-		//return _offset;
+		// Ensuite on remonte pour affecter petit a petit l'espace des paramètres
+		for (ParameterDeclaration param : this.parameters) {
+			param.offset = depl;
+			depl += param.type.length();
+		}
+		this.body.allocateMemory(this.register, 0);
+		return 0;
 	}
 
 	/* (non-Javadoc)
@@ -180,13 +182,17 @@ public class FunctionDeclaration implements Instruction, Declaration {
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
+		String labelEnd = this.name + "_end";
 		Fragment _result = _factory.createFragment();
-		_result.addPrefix(this.name);
-		_result.append(this.body.getCode(_factory));
+		Fragment funcBody = _factory.createFragment();
+		// On prépare le corps de la fonction entouré de labels
+		funcBody.addPrefix(this.name);
+		funcBody.append(this.body.getCode(_factory));
+		funcBody.addSuffix(labelEnd);
+		// On y rajoute le jump
+		_result.add(_factory.createJump(labelEnd));
+		_result.append(funcBody);
 		return _result;
-
-		//return _factory.createFragment();
-		
 	}
 
 	public Block getBody() {

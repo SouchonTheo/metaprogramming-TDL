@@ -10,6 +10,7 @@ import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
 import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
+import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
 import fr.n7.stl.util.Logger;
 
@@ -82,8 +83,11 @@ public class VariableAssignment extends AbstractIdentifier implements Assignable
 					d.getOffset(),
 					d.getType().length()));
 		} else if(this.declaration instanceof ParameterDeclaration) {
-			Logger.error("ParameterDeclaration not implemented yet.");
-		}
+			ParameterDeclaration d = (ParameterDeclaration) this.declaration;
+			_result.add(_factory.createStore(
+					Register.LB, 
+					d.getOffset(),
+					d.getType().length()));		}
 		return _result;
 	}
 }

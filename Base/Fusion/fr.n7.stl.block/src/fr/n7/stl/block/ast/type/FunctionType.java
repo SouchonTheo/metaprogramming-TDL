@@ -28,14 +28,14 @@ public class FunctionType implements Type {
 			this.parameters.add(_type);
 		}
 	}
-		/*Ajout des getters pour le function type */
-		public Type getResultType(){
-			return this.result;
-		}
-	
-		public List<Type> getArgsType(){
-			return this.parameters;
-		}
+	/*Ajout des getters pour le function type */
+	public Type getResultType(){
+		return this.result;
+	}
+
+	public List<Type> getArgsType(){
+		return this.parameters;
+	}
 	
 
 	/* (non-Javadoc)

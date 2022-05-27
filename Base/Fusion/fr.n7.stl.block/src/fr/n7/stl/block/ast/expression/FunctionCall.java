@@ -3,6 +3,7 @@
  */
 package fr.n7.stl.block.ast.expression;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -108,10 +109,7 @@ public class FunctionCall implements Expression {
 
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.Expression#getType()
-	 */
+	/*
 	@Override
 	public Type getType() {
 		Type type = this.function.getType();
@@ -124,8 +122,7 @@ public class FunctionCall implements Expression {
 			return AtomicType.ErrorType;
 		}
 	}
-
-	/* (non-Javadoc)
+*/
 	@Override
 	public Type getType() {
 		if (this.function.getType() instanceof FunctionType) {
@@ -152,7 +149,6 @@ public class FunctionCall implements Expression {
 		Logger.error(this.name + " n'est pas une fonction");
 		return AtomicType.ErrorType;
 	}
-	*/
 
 	/* (non-Javadoc)
 	 * @see fr.n7.stl.block.ast.Expression#getCode(fr.n7.stl.tam.ast.TAMFactory)
@@ -164,11 +160,8 @@ public class FunctionCall implements Expression {
 		for(Expression e : this.arguments) {
 			frag.append(e.getCode(_factory));
 		}
+		// On rajoute un call
 		frag.add(_factory.createCall(this.name, this.function.getRegister()));
-		
-		frag.addSuffix(this.name);
-		// On écrit le code du bloc
-		frag.append(this.function.getBody().getCode(_factory));
 		return frag;
 	}
 

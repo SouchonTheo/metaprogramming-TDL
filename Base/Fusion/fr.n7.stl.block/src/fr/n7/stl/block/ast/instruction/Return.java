@@ -19,6 +19,7 @@ import fr.n7.stl.tam.ast.TAMFactory;
 public class Return implements Instruction {
 
 	protected Expression value;
+	private int offset;
 
 	public Return(Expression _value) {
 		this.value = _value;
@@ -66,6 +67,7 @@ public class Return implements Instruction {
 	 */
 	@Override
 	public int allocateMemory(Register _register, int _offset) {
+		this.offset = _offset;
 		return 0;
 	}
 
@@ -76,7 +78,7 @@ public class Return implements Instruction {
 	public Fragment getCode(TAMFactory _factory) {
 		Fragment frag = _factory.createFragment();
 		frag.append(this.value.getCode(_factory));
-		frag.add(_factory.createReturn(this.value.getType().length(), 0));
+		frag.add(_factory.createReturn(this.value.getType().length(), offset));
 		return frag;
 	}
 

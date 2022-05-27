@@ -8,8 +8,8 @@ import fr.n7.stl.block.ast.expression.Expression;
 import fr.n7.stl.block.ast.instruction.declaration.ParameterDeclaration;
 import fr.n7.stl.block.ast.instruction.declaration.VariableDeclaration;
 import fr.n7.stl.tam.ast.Fragment;
+import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
-import fr.n7.stl.util.Logger;
 
 /**
  * Abstract Syntax Tree node for an expression whose computation assigns the content of a pointed cell.
@@ -41,7 +41,11 @@ public class PointerAssignment extends AbstractPointer implements AssignableExpr
 				d.getOffset(),
 				d.getType().length()));
 		} else if(va.declaration instanceof ParameterDeclaration) {
-			Logger.error("ParameterDeclaration not implemented yet.");
+			ParameterDeclaration d = (ParameterDeclaration) va.declaration;
+			_result.add(_factory.createLoad(
+				Register.LB, 
+				d.getOffset(),
+				d.getType().length()));
 		}
 		_result.add(_factory.createStoreI(s));
 		return _result;

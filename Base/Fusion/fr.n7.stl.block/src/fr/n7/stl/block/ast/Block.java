@@ -143,19 +143,4 @@ public class Block {
 		_result.add(_factory.createPop(this.offset, this.size));
 		return _result;
 	}
-	/*
-	public Fragment getCode(TAMFactory _factory) {
-		Fragment frag = _factory.createFragment();
-		for (Instruction i : this.instructions) {
-			frag.append(i.getCode(_factory));
-		}
-		if (this.register.equals(Register.LB)) {
-			frag.add(_factory.createPop(this.offset, 0));
-		} else {
-			frag.add(_factory.createPop(this.offset, this.size));			
-		}
-		return frag;
-	}
-	*/
-
 }

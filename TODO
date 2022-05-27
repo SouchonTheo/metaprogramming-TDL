@@ -1,29 +1,11 @@
 (TODO)
 ? = to merge
 ~ = pas sûr mais normalement OK
-f = revoir par rapport aux fonctions
 
-
-/Expression
-    /Accessible:
-        - ParameterAccess ?
-
-    /Assignable:
-        - ArrayAssignment f
-        - PointerAssignment f
-        - VariableAssignment f
-
-    - FunctionCall f
-    
-/Instruction
-    /Declaration:
-        - FunctionDeclaration f
-        - Return f
-        
 /Type
     - ArrayType ~ (length)
     - EnumerationType ~ (length)
-    - FunctionType (merge/length) f
+    - FunctionType ~ (merge/length)
     - PointerType ~ (length)
     
 - Block f
