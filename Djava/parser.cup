@@ -174,28 +174,26 @@ Elements ::= Main:principal
 			_elements.addPrincipalClass(principal);
 			RESULT = _elements;
 		:}
-		/*On enlève un e à interface pour éviter les problèmes avec le mot clef interface*/
-		| Interface:interfac Elements:elements
+		| Interface:_interface Elements:elements
 		{:
-			elements.addInterface(interfac);
+			elements.addInterface(_interface);
 			RESULT = elements;
 		:}
-		/*On met un e à class pour éviter les problèmes avec le mot clef class*/
-		| Class:classe Elements:elements
+		| Class:_class Elements:elements
 		{:
-			elements.addClass(classe);
+			elements.addClass(_class);
 			RESULT = elements;
 		:}
-		| UL_Abstrait Class:classe Elements:elements
+		| UL_Abstrait Class:_class Elements:elements
 		{:
-			classe.setAbstract();
-			elements.addClass(classe);
+			_class.setAbstract();
+			elements.addClass(_class);
 			RESULT = elements;
 		:}
-		| UL_Definitif Class:classe Elements:elements
+		| UL_Definitif Class:_class Elements:elements
 		{:
-			classe.setFinal();
-			elements.addClass(classe);
+			_class.setFinal();
+			elements.addClass(_class);
 			RESULT = elements;
 		:}
 		;
@@ -203,14 +201,14 @@ Elements ::= Main:principal
 Interface ::= UL_Interface UL_Identificateur:nom Generics:generiques MultipleInherits:heritages
 		UL_Accolade_Ouvrante InterfaceElements:interfaceElements UL_Accolade_Fermante
 		{:
-			RESULT = new Interface(nom,generiques,heritages,interfaceElements);
+			RESULT = new InterfaceDeclaration(nom,generiques,heritages,interfaceElements);
 		:}
 		;
 		
 Class ::= UL_Classe UL_Identificateur:nom Generics:generiques SingleInherits:heritage Implements:interfaces
 		UL_Accolade_Ouvrante ClassElements:classeElements UL_Accolade_Fermante
 		{:
-			RESULT = new Class(nom,generiques, heritage, interfaces, classeElements);
+			RESULT = new ClassDeclaration(nom,generiques, heritage, interfaces, classeElements);
 		:}
 		;
 		
@@ -219,7 +217,7 @@ Main ::= UL_Public UL_Classe UL_Classe_Principale
 			UL_Public UL_De_Classe UL_Type_Vide UL_Methode_Principale 
 			UL_Parenthese_Ouvrante Parameters:parameters UL_Parenthese_Fermante Block:block UL_Accolade_Fermante
 		{:
-			RESULT = new Main(parameters,block);
+			RESULT = new MainDeclaration(parameters,block);
 		:}
 		;
 		
