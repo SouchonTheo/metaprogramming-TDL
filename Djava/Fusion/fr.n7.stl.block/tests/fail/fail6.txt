@@ -1,0 +1,5 @@
+//AbstractArray ligne 72
+fail6{
+    int x = 2;
+    x[5] = 8;
+}

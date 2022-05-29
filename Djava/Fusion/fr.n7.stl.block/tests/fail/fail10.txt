@@ -1,0 +1,10 @@
+//AbstractField ligne 80
+test10{
+    	typedef struct Point{
+		int x;
+		int y;
+		float length;
+	} Point;
+    Point pyt = {1,2,5.0};
+    pyt.z = 5;
+}

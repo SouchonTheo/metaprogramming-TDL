@@ -1,0 +1,13 @@
+//Conditional ligne 112
+test42{
+    float pgcd(int i) {
+        if(i==2) {
+            return "5";
+        } else {
+            
+        }
+        return 5.0;
+    }
+
+    float i = pgcd(5);
+}

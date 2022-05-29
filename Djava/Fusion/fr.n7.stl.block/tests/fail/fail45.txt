@@ -1,0 +1,4 @@
+//NamedType ligne 133
+test44{
+    i j  = 6;
+}

@@ -1,0 +1,7 @@
+//BinaryExpression ligne 186
+test23{
+    <int, int> p = <1,2>;
+    <int, int> q = <1,2>;
+    int z = 3;
+    z = (p && q);
+}

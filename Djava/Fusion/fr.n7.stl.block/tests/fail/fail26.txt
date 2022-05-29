@@ -1,0 +1,5 @@
+//First ligne 68
+test26{
+    int z = 3;
+    z = fst z;
+}
