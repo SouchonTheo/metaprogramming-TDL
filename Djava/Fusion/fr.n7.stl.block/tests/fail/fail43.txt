@@ -1,0 +1,7 @@
+//Iteration ligne 71
+test43{
+    int i = 5;
+    while(i) {
+
+    }
+}

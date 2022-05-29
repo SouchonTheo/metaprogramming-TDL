@@ -1,0 +1,80 @@
+test {
+	int i = 1;
+	int *a = &i;
+	*a = 50;
+	const int j = 2;
+	< int, int> p = < 3, 4>;
+	<int, <int, int>> q = <5, p>;
+	int k = fst p;
+	if ( i < 5 ) {
+		int j = 5;
+		j = i * (snd p);
+		i = j + 1;
+		while ( k < 10 ) {
+			int p = 3;
+			k = k + i - p;
+		}
+	} else {
+		if ( i + j > 10 ) {
+			const boolean p = false;
+			print p;
+		}
+		print p;
+	}
+	print j;
+
+	typedef enum bizarre{
+		ETRANGE,
+		BIZZARROIDE,
+		LOUCHE,
+		SPATULE
+	} Bizzarre;
+
+	Bizzarre bv = Bizzarre.LOUCHE;
+
+	typedef int Integer;
+	typedef <Integer,Integer> PaireInteger;
+
+	Integer tab[] = new Integer[5];
+
+	tab[4] = 5;
+
+
+	typedef struct Point{
+		int x;
+		int y;
+		float length;
+	} Point;
+
+
+	tab[3] = 5;
+	typedef int* Intpoint;
+
+	typedef Intpoint IntPointbis;
+	typedef float* Floatpoint;
+    float Q_rsqrt( float number )
+    {
+        
+        float x2 = number * 0.5;
+		float y = number;
+        const float threehalfs = 1.5;
+        Integer i  = * ( IntPointbis ) &y;                 
+        i  = 1597463007 - ( i+2 ); 
+        y  = y * ( threehalfs - ( x2 * y * y ) );   
+
+        return y;
+    }
+
+	Point pyt = {tab[3], tab[5], 5.0};
+
+	float l = pyt.length;
+
+	void updateLength(Point p) {
+		p.length = p.x + p.y;
+	}
+
+	void x = updateLength(pyt);
+
+	print pyt.length;
+
+}

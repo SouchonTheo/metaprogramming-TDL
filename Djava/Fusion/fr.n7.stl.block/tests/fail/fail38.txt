@@ -1,0 +1,5 @@
+//VariableDeclaration ligne 113
+test38{
+    int i = 5;
+    int i = 5;
+}

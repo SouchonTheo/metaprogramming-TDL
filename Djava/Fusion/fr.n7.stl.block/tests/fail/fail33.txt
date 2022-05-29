@@ -1,0 +1,5 @@
+//UnaryExpression ligne 82
+test33{
+    String z = "STDL";
+    z = -z;
+}

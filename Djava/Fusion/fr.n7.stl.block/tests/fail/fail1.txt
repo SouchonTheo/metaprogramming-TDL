@@ -1,0 +1,8 @@
+//IdentifierAccess ligne 87
+fail{
+    void f() {
+        print 1;
+    }
+
+    int x = f;
+}

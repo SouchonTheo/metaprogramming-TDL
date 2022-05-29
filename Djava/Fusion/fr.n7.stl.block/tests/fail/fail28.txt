@@ -1,0 +1,5 @@
+//First ligne 106
+test28{
+    int z = 5;
+    float p = z(5.0);
+}

@@ -1,0 +1,4 @@
+//VariableAssignement ligne 60
+fail5{
+    f = 5;
+}
