@@ -143,4 +143,12 @@ public class Block {
 		_result.add(_factory.createPop(this.offset, this.size));
 		return _result;
 	}
+
+	public Fragment getCode(TAMFactory _factory, boolean isFirstBlock) {
+		Fragment _result = this.getCode(_factory);
+		if (isFirstBlock) {
+			_result.add(_factory.createHalt());			
+		}
+		return _result;
+	}
 }

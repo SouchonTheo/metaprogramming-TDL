@@ -9,6 +9,7 @@ import java_cup.runtime.*;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.util.*;
 import fr.n7.stl.block.ast.*;
 import fr.n7.stl.block.ast.expression.*;
@@ -757,7 +758,14 @@ class CUP$Parser$actions {
 							System.out.println("CheckType succeeded.");
 							bloc.allocateMemory(Register.SB,0);
 							System.out.println("Memory allocated");
-							System.out.println(bloc.getCode(new TAMFactoryImpl()));
+							try {
+                FileWriter fw = new FileWriter("Result.tam");
+                fw.write(bloc.getCode(new TAMFactoryImpl(), true).toString());
+                fw.close();
+                System.out.println("Le texte a été écrit avec succès");
+              } catch (IOException e) {
+                e.printStackTrace();
+              }
 						} else {
 							System.out.println("CheckType failed.");
 						}
