@@ -136,7 +136,7 @@ public class ConstantDeclaration implements Instruction, Declaration {
 	public int allocateMemory(Register _register, int _offset) {
 		this.register = _register;
 		this.offset = _offset;
-		return _offset + this.type.length();
+		return this.type.length();
 	}
 
 	/* (non-Javadoc)

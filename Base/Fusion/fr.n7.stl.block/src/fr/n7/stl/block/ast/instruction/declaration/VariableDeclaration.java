@@ -149,7 +149,7 @@ public class VariableDeclaration implements Declaration, Instruction {
 	public int allocateMemory(Register _register, int _offset) {
 		this.register = _register;
 		this.offset = _offset;
-		return _offset + this.type.length();
+		return this.type.length();
 	}
 
 	/* (non-Javadoc)

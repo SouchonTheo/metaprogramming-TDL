@@ -758,7 +758,7 @@ class CUP$Parser$actions {
 							System.out.println("CheckType succeeded.");
 							bloc.allocateMemory(Register.SB,0);
 							System.out.println("Memory allocated");
-							try {
+							try { 
                 FileWriter fw = new FileWriter("Result.tam");
                 fw.write(bloc.getCode(new TAMFactoryImpl(), true).toString());
                 fw.close();

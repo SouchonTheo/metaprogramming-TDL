@@ -120,7 +120,7 @@ public class Conditional implements Instruction {
 		if (elseBranch != null) {
 			this.elseBranch.allocateMemory(_register, _offset);
 		}
-		return _offset;
+		return 0;
 	}
 
 	/* (non-Javadoc)
