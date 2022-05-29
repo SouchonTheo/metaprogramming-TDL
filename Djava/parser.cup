@@ -151,22 +151,36 @@ Program ::= /* retrait miniJava
 					System.out.println("Collect failed : " + tds);
 				}
 				retrait miniJava */
+				/*ajout miniJava*/
+				SymbolTable tds = new SymbolTable();
+				System.out.println( "Elements of the programms : " + elements);
+				if (elements.collect(tds)) {
+					System.out.println("Collect succeeded : " + tds);
+					if (elements.resolve(tds)) {
+						System.out.println("Resolve succeeded.");
+					} else {
+						System.out.println("Resolve failed." + tds);
+					}
+				} else {
+					System.out.println("Collect failed : " + tds);
+				}
 			:}
 		;
 
 /* ajout miniJava : classes, interfaces, attributs, méthodes, constructeurs, etc */
-Elements ::= Main:main
+Elements ::= Main:principal
 		{:
 			Programme _elements = new Programme();
-			_elements.addPrincipalClass(main);
+			_elements.addPrincipalClass(principal);
 			RESULT = _elements;
 		:}
-		| Interface:interface Elements:elements
+		/*On enlève un e à interface pour éviter les problèmes avec le mot clef interface*/
+		| Interface:interfac Elements:elements
 		{:
-			elements.addInterface(interface);
+			elements.addInterface(interfac);
 			RESULT = elements;
 		:}
-		/*On met un e à classe pour éviter les problèmes avec le mot clef class*/
+		/*On met un e à class pour éviter les problèmes avec le mot clef class*/
 		| Class:classe Elements:elements
 		{:
 			elements.addClass(classe);
@@ -186,17 +200,17 @@ Elements ::= Main:main
 		:}
 		;
 		
-Interface ::= UL_Interface UL_Identificateur Generics:generiques MultipleInherits:heritages
+Interface ::= UL_Interface UL_Identificateur:nom Generics:generiques MultipleInherits:heritages
 		UL_Accolade_Ouvrante InterfaceElements:interfaceElements UL_Accolade_Fermante
 		{:
-			RESULT = new Interface(generiques,heritages,interfaceElements);
+			RESULT = new Interface(nom,generiques,heritages,interfaceElements);
 		:}
 		;
 		
-Class ::= UL_Classe UL_Identificateur Generics:generiques SingleInherits:heritage Implements:interfaces
+Class ::= UL_Classe UL_Identificateur:nom Generics:generiques SingleInherits:heritage Implements:interfaces
 		UL_Accolade_Ouvrante ClassElements:classeElements UL_Accolade_Fermante
 		{:
-			RESULT = new Class(generiques, heritage, interfaces, classeElements);
+			RESULT = new Class(nom,generiques, heritage, interfaces, classeElements);
 		:}
 		;
 		
