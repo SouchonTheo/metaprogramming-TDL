@@ -98,7 +98,7 @@ public class ClassDeclaration implements Instruction, Declaration {
 	}
 
     @Override
-    public int fullResolve(HierarchicalScope<Declaration> _scope) {
+    public boolean fullResolve(HierarchicalScope<Declaration> _scope) {
         Logger.error("fullResolve not implemented for ClassDeclaration");
     }
 

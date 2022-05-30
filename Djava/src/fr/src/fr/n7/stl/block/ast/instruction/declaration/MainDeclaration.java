@@ -37,32 +37,16 @@ public class MainDeclaration implements Instruction, Declaration {
         return this.getName();
     }
 
-	public String getName() {
-        String _result = "void main( ";
-		Iterator<ParameterDeclaration> _iter = this.parameters.iterator();
-		if (_iter.hasNext()) {
-			_result += _iter.next();
-			while (_iter.hasNext()) {
-				_result += " ," + _iter.next();
-			}
-            this.body = _block;
-        }
-    
-        @Override
-        public String toString() {
-            return this.getName();
-        }
-    
-        public String getName() {
-            String _result = "void main( ";
-            Iterator<ParameterDeclaration> _iter = this.parameters.iterator();
-            if (_iter.hasNext()) {
-                _result += _iter.next();
-                while (_iter.hasNext()) {
-                    _result += " ," + _iter.next();
-                }
+    public String getName() {
+        String _result = "public static void main( ";
+        Iterator<ParameterDeclaration> _iter = this.parameters.iterator();
+        if (_iter.hasNext()) {
+            _result += _iter.next();
+            while (_iter.hasNext()) {
+                _result += " ," + _iter.next();
+            }
 		}
-		return _result + " )" + this.body;
+		return _result + " )" + this.body.toString();
     }
 
 
@@ -90,9 +74,7 @@ public class MainDeclaration implements Instruction, Declaration {
 		for (ParameterDeclaration p : this.parameters) {
 			b = b && p.getType().resolve(_scope);
 		}
-		return this.body.ful	/* (non-Javadoc)
-        * @see fr.n7.stl.block.ast.instruction.Instruction#checkType()
-        */lResolve(this.tds) && b;
+		return this.body.fullResolve(this.tds) && b;
 	}
 
 	@Override
@@ -101,10 +83,10 @@ public class MainDeclaration implements Instruction, Declaration {
 	}
 
 	
-
     @Override
     public int allocateMemory(Register _register, int _offset) {
         Logger.error("allocateMemory not implemented for MainDeclaration");
+        return 0;
     }
 
     @Override
