@@ -1,0 +1,10 @@
+- paramètres génériques de la classe ?  -> TypeParameter : pourquoi ne pas mettre directement Type ?
+- les attributs de la classe ?
+
+- Instance ? objet ? classe ?
+
+- classElement ? A quoi ça correspond exactement ?
+
+- noms en français ? UL oui;
+
+- le constructeur a un nom ?
