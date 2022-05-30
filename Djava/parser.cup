@@ -245,7 +245,7 @@ TypeParameter ::= UL_Identificateur:etiquette
 		
 Constraints ::= Instance:instance
 		{:
-			List<Intance> _contraintes = new LinkedList<Instance>();
+			List<Instance> _contraintes = new LinkedList<Instance>();
 			_contraintes.add(instance);
 			RESULT = _contraintes;
 		:}
@@ -356,11 +356,11 @@ AccessRight ::=
 		:}
 		| UL_Protege
 		{:
-			RESULT = AccessRight.PROTEGE;
+			RESULT = AccessRight.PROTECTED;
 		:}
 		| UL_Prive
 		{:
-			RESULT = AccessRight.PRIVE;
+			RESULT = AccessRight.PRIVATE;
 		:}
 		;	
 		
@@ -411,26 +411,26 @@ Attribute ::=
 Method ::=
 		Signature:entete Block:corps
 		{:
-			RESULT = new Methode(entete,corps);
+			RESULT = new Method(entete,corps);
 		:}
 		| 
 		UL_Definitif Signature:entete Block:corps
 		{:
-			Method method = new Methode(entete,corps);
-			Method.setFinal();
+			Method method = new Method(entete,corps);
+			method.setFinal();
 			RESULT = method;
 		:}
 		| 
 		UL_De_Classe Signature:entete Block:corps
 		{:
-			Method method = new Methode(entete,corps);
+			Method method = new Method(entete,corps);
 			method.setStatic();
 			RESULT = method;
 		:}
 		| 
 		UL_De_Classe UL_Definitif Signature:entete Block:corps
 		{:
-			Method method = new Methode(entete,corps);
+			Method method = new Method(entete,corps);
 			method.setStatic();
 			method.setFinal();
 			RESULT = method;
@@ -438,7 +438,7 @@ Method ::=
 		| 
 		UL_Abstrait Signature:entete UL_Point_Virgule
 		{:
-			Method method = new Methode(entete);
+			Method method = new Method(entete);
 			/*En sit pas nécessaire, car la seule fois où ce constructeur est appelé, mais plus clair*/
 			method.setAbstract();
 			RESULT = method;
@@ -458,14 +458,14 @@ Signature ::=
 		;
 		
 Constructor ::=
-		UL_Identificateur:nom UL_Parenthese_Ouvrante Parameters:parametres UL_Parenthese_Fermante Block:block
-		{:
-			RESULT = new COnstructor(nom,parametres,block);
-		:}
-		|
 		UL_Identificateur:nom UL_Parenthese_Ouvrante UL_Parenthese_Fermante Block:block
 		{:
-			RESULT = new COnstructor(nom,parametres,block);
+			RESULT = new Constructor(nom,block);
+		:}
+		|
+		UL_Identificateur:nom UL_Parenthese_Ouvrante Parameters:parametres UL_Parenthese_Fermante Block:block
+		{:
+			RESULT = new Constructor(nom,block,parametres);
 		:}
 		;
 
