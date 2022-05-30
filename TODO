@@ -7,5 +7,18 @@
     - EnumerationType ~ (length)
     - FunctionType ~ (merge/length)
     - PointerType ~ (length)
-    
-- Block f
+
+
+- Creer toutes les classes correspondantes
+- faire le collectAndBackwardResolve
+-faire le fullResolve
+-faire le AllocateMemory
+-faire le getCode
+-faire les tests
+Si on veut plutôt faire en profondeur (ie finir complètement un bout de l'analyse au code avant de passer au suivant) , il y a dans l'ordre :
+-les programmes impératifs (public static void main)
+- les classes et appels d'attributs et de méthodes
+- les interfaces
+- l'héritage des interfaces
+- l'héritage des classes
+-la généricité.

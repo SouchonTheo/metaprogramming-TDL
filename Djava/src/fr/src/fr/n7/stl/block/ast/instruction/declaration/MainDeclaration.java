@@ -25,6 +25,7 @@ public class MainDeclaration implements Instruction, Declaration {
     protected List<ParameterDeclaration> parameters;
     protected Block body;
     protected HierarchicalScope<Declaration> tds;
+    private Register register;
 
 
     public MainDeclaration(List<ParameterDeclaration> _parameters, Block _block){
@@ -38,7 +39,7 @@ public class MainDeclaration implements Instruction, Declaration {
     }
 
     public String getName() {
-        String _result = "public static void main( ";
+        String _result = "void main( ";
         Iterator<ParameterDeclaration> _iter = this.parameters.iterator();
         if (_iter.hasNext()) {
             _result += _iter.next();
@@ -82,17 +83,37 @@ public class MainDeclaration implements Instruction, Declaration {
 		return this.body.checkType();
 	}
 
-	
+	// En fait c'est pareil qu'une fonction classique non ?
     @Override
     public int allocateMemory(Register _register, int _offset) {
-        Logger.error("allocateMemory not implemented for MainDeclaration");
-        return 0;
+        this.register = Register.LB;
+		// On commence par calculer le déplacement total
+		int depl = 0;
+		for (ParameterDeclaration param : this.parameters) {
+			depl -= param.type.length();
+		}
+		// Ensuite on remonte pour affecter petit a petit l'espace des paramètres
+		for (ParameterDeclaration param : this.parameters) {
+			param.offset = depl;
+			depl += param.type.length();
+		}
+		this.body.allocateMemory(this.register, 0);
+		return 0;
     }
 
     @Override
     public Fragment getCode(TAMFactory _factory) {
-        Logger.error("getCode not implemented for MainDeclaration");
-        return _factory.createFragment();
+        String labelEnd = "main_end";
+		Fragment _result = _factory.createFragment();
+		Fragment funcBody = _factory.createFragment();
+		// On prépare le corps de la fonction entouré de labels
+		funcBody.addPrefix("main");
+		funcBody.append(this.body.getCode(_factory));
+		funcBody.addSuffix(labelEnd);
+		// On y rajoute le jump
+		_result.add(_factory.createJump(labelEnd));
+		_result.append(funcBody);
+		return _result;
     }
 
 }
