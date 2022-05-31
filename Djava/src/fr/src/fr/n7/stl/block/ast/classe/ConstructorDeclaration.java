@@ -8,20 +8,24 @@ import fr.n7.stl.block.ast.SemanticsUndefinedException;
 import fr.n7.stl.block.ast.instruction.declaration.ParameterDeclaration;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
+import fr.n7.stl.block.ast.scope.SymbolTable;
 import fr.n7.stl.block.ast.type.AtomicType;
 import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
+import fr.n7.stl.util.Logger;
 
 public class ConstructorDeclaration extends ClassElement implements DeclarationWithParameters{
     
 
-	protected Block block;
+	protected Block body;
 
     protected String name;
 
     private Register register;
+
+    private Type type;
 
     /**
 	 * Scope
@@ -33,24 +37,42 @@ public class ConstructorDeclaration extends ClassElement implements DeclarationW
     */
    protected List<ParameterDeclaration> parameters;
     
-    public ConstructorDeclaration(String name, Block block, List<ParameterDeclaration> parameters) {
+    public ConstructorDeclaration(String name, Block body, List<ParameterDeclaration> parameters) {
         this.name = name;
-        this.block = block;
+        this.body = body;
+        this.type = new Instance(this.name);
         this.parameters = parameters;
     }
 
-    public ConstructorDeclaration(String name, Block block) {
-        this(name,block, new ArrayList<ParameterDeclaration>());
+    public ConstructorDeclaration(String name, Block body) {
+        this(name,body, new ArrayList<ParameterDeclaration>());
     }
     
     @Override
     public String getName() {
         return this.name;
     }
+
+    public Block getBody() {
+        return this.body;
+    }
     
+    public Register getRegister() {
+        return this.register;
+    }
+
     @Override
     public Type getType() {
-        return block.getType();
+        if (!this.body.returnsTo().compatibleWith(this.type)) {
+			Logger.error("Return type incorrect");
+			return AtomicType.ErrorType;
+		}
+
+		List<Type> parametersType = new ArrayList<Type>();
+		for (ParameterDeclaration p : this.parameters){
+			parametersType.add(p.getType());
+		}
+        return new ConstructorType(this.type , parametersType);
     }
     
     @Override
@@ -61,14 +83,15 @@ public class ConstructorDeclaration extends ClassElement implements DeclarationW
     @Override
     public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
         if (_scope.accepts(this)) {
-            _scope.register();
+            _scope.register(this);
             this.tds = new SymbolTable(_scope);
             for (ParameterDeclaration p : this.getParameters()) {
                 this.tds.register(p);
             }
-            return block.collectAndBackwardResolve(this.tds);
+            return body.collectAndBackwardResolve(this.tds);
         } else {
             Logger.error("Déjà existant");
+            return false;
         }
     }
 
@@ -78,12 +101,12 @@ public class ConstructorDeclaration extends ClassElement implements DeclarationW
 		for (ParameterDeclaration p : this.getParameters()) {
 			b = b && p.getType().resolve(_scope);
 		}
-        return this.block.fullResolve(this.tds) && b;
+        return this.body.fullResolve(this.tds) && b;
     }
 
     @Override
     public boolean checkType() {
-        return block.checkType();
+        return body.checkType();
     }
 
     @Override

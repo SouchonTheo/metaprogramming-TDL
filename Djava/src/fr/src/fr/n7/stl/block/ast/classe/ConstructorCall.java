@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import fr.n7.stl.block.ast.SemanticsUndefinedException;
 import fr.n7.stl.block.ast.expression.Expression;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
@@ -47,7 +46,7 @@ public class ConstructorCall implements Expression {
 	 */
 	public ConstructorCall(String _name, List<Expression> _arguments) {
 		this.name = _name;
-		this.method = null;
+		this.constructor = null;
 		this.arguments = _arguments;
 	}
 
@@ -56,7 +55,7 @@ public class ConstructorCall implements Expression {
 	 */
 	@Override
 	public String toString() {
-		String _result = ((this.method == null)?this.name:this.method) + "( ";
+		String _result = ((this.constructor == null)?this.name:this.constructor) + "( ";
 		Iterator<Expression> _iter = this.arguments.iterator();
 		if (_iter.hasNext()) {
 			_result += _iter.next();
@@ -146,7 +145,7 @@ public class ConstructorCall implements Expression {
 			frag.append(e.getCode(_factory));
 		}
 		// On rajoute un call
-		frag.add(_factory.createCall(this.name, this.method.getRegister()));
+		frag.add(_factory.createCall(this.name, this.constructor.getRegister()));
 		return frag;
 	}
 
