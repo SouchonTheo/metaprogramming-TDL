@@ -1,6 +1,8 @@
 package fr.n7.stl.block.ast.classe;
 
+import java.util.Iterator;
 import java.util.List;
+
 
 import fr.n7.stl.block.ast.instruction.declaration.ParameterDeclaration;
 import fr.n7.stl.block.ast.type.Type;
@@ -31,4 +33,15 @@ public class Signature extends InterfaceElement {
         this(type, name, null);
     }
 
+    public String toString() {
+		String _result = this.type + " " + this.name + "( ";
+		Iterator<ParameterDeclaration> _iter = this.parameters.iterator();
+		if (_iter.hasNext()) {
+			_result += _iter.next();
+			while (_iter.hasNext()) {
+				_result += " ," + _iter.next();
+			}
+		}
+        return _result + ")";
+    }
 }

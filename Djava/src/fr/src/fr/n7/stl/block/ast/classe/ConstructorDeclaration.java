@@ -1,52 +1,39 @@
 package fr.n7.stl.block.ast.classe;
 
+import java.util.List;
+
+import fr.n7.stl.block.ast.Block;
 import fr.n7.stl.block.ast.SemanticsUndefinedException;
-import fr.n7.stl.block.ast.expression.Expression;
 import fr.n7.stl.block.ast.instruction.Instruction;
+import fr.n7.stl.block.ast.instruction.declaration.ParameterDeclaration;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
+import fr.n7.stl.block.ast.type.AtomicType;
 import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
 
-public class AttributeDeclaration extends ClassElement implements Instruction, Declaration {
-
-    /**
-	 * Name of the declared attribute.
-	 */
-	protected String name;
-
-	/**
-	 * AST node for the type of the declared attribute.
-	 */
-	protected Type type;
-
-    /**
-	 * AST node for the initial value of the declared attribute.
-	 */
-	protected Expression value;
-
+public class ConstructorDeclaration extends ClassElement implements Instruction, Declaration {
     
-    /**
-	 * Address register that contains the base address used to store the declared attribute.
-	 */
-	protected Register register;
-	
-	/**
-	 * Offset from the base address used to store the declared attribute
-	 * i.e. the size of the memory allocated to the previous declared attribute
-	 */
-	protected int offset;
 
-    public AttributeDeclaration(Type type, String name, Expression value) {
-        this.type = type;
+	protected Block block;
+
+    protected String name; // ?
+
+   /**
+    * List of AST nodes for the formal parameters of the function
+    */
+   protected List<ParameterDeclaration> parameters;
+    
+    public ConstructorDeclaration(String name, Block block, List<ParameterDeclaration> parameters) {
         this.name = name;
-        this.value = value;
+        this.block = block;
+        this.parameters = parameters;
     }
 
-    public AttributeDeclaration(Type type, String name) {
-        this(type, name, null);
+    public ConstructorDeclaration(String name, Block block) {
+        this(name,block, null);
     }
 
     @Override
@@ -56,15 +43,7 @@ public class AttributeDeclaration extends ClassElement implements Instruction, D
 
     @Override
     public Type getType() {
-        return this.type;
-    }
-
-    public Register getRegister() {
-        return this.register;
-    }
-
-    public int getOffset() {
-        return this.offset;
+        throw new SemanticsUndefinedException("getType");
     }
 
     @Override
@@ -84,18 +63,16 @@ public class AttributeDeclaration extends ClassElement implements Instruction, D
 
     @Override
     public Type returnsTo() {
-        throw new SemanticsUndefinedException("returnsTo");
+        return AtomicType.VoidType;
     }
 
     @Override
     public int allocateMemory(Register _register, int _offset) {
-    throw new SemanticsUndefinedException("allocateMemory");
+        throw new SemanticsUndefinedException("allocateMemory");
     }
 
     @Override
     public Fragment getCode(TAMFactory _factory) {
         throw new SemanticsUndefinedException("Semantics getCode");
     }
-
-    
 }

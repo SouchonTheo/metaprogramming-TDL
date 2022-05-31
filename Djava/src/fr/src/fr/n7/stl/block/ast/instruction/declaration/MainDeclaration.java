@@ -62,10 +62,10 @@ public class MainDeclaration implements Instruction, Declaration {
 
 	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope){
         this.tds = new SymbolTable(_scope);
-			for (ParameterDeclaration p : this.parameters){
-				this.tds.register(p);
-			}
-			return this.body.collectAndBackwardResolve(this.tds);
+        for (ParameterDeclaration p : this.parameters){
+            this.tds.register(p);
+        }
+        return this.body.collectAndBackwardResolve(this.tds);
     }
 	
 
