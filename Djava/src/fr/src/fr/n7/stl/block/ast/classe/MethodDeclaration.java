@@ -152,11 +152,16 @@ public class MethodDeclaration extends ClassElement implements DeclarationWithPa
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
-		String labelEnd = this.getName() + "_end";
+		String labelEnd;
 		Fragment _result = _factory.createFragment();
 		Fragment funcBody = _factory.createFragment();
 		// On prépare le corps de la fonction entouré de labels
-		funcBody.addPrefix(this.getName());
+		String labelBegin = this.getName();
+		for (ParameterDeclaration param : this.getParameters()) {
+			labelBegin = labelBegin + param.getType().toString();
+		}
+		labelEnd = labelBegin + "_end";
+		funcBody.addPrefix(labelBegin);
 		funcBody.append(this.body.getCode(_factory));
 		funcBody.addSuffix(labelEnd);
 		// On y rajoute le jump
