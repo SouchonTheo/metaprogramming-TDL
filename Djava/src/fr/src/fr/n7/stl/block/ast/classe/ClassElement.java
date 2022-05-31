@@ -30,4 +30,12 @@ public abstract class ClassElement implements Instruction, Declaration {
         return isFinal;
     }
 
+    public void setAccess(AccessRight ac) {
+        this.access = ac;
+    }
+
+    public AccessRight getAccess() {
+        return this.access;
+    }
+
 }
