@@ -72,7 +72,7 @@ public class ConstructorCall implements Expression {
 	 */
 	@Override
 	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
-		throw new SemanticsUndefinedException("c&d&p");
+		return true;
 	}
 
 	/* (non-Javadoc)
@@ -80,7 +80,19 @@ public class ConstructorCall implements Expression {
 	 */
 	@Override
 	public boolean fullResolve(HierarchicalScope<Declaration> _scope) {
-		throw new SemanticsUndefinedException("fullResolve");
+		if (((HierarchicalScope<Declaration>)_scope).knows(this.name)) {
+			Declaration _declaration = _scope.get(this.name);
+			if (_declaration instanceof ConstructorDeclaration) {
+				this.declaration = ((ConstructorDeclaration) _declaration);
+				return true;
+			} else {
+				Logger.error("The call for " + this.name + " is of the wrong kind.");
+				return false;
+			}
+		} else {
+			Logger.error("The identifier " + this.name + " has not been found.");
+			return false;	
+		}
 	}
 	/*
 	@Override

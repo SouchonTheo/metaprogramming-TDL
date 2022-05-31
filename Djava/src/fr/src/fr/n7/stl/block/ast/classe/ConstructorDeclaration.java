@@ -43,7 +43,7 @@ public class ConstructorDeclaration extends ClassElement implements DeclarationW
     
     @Override
     public Type getType() {
-        throw new SemanticsUndefinedException("getType");
+        return block.getType();
     }
     
     @Override
@@ -53,17 +53,23 @@ public class ConstructorDeclaration extends ClassElement implements DeclarationW
 
     @Override
     public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
-        throw new SemanticsUndefinedException("collectAndBackwardResolve");
+        if (_scope.accepts(this)) {
+            _scope.register();
+            return block.collectAndBackwardResolve(_scope);
+        } else {
+            Logger.error("Déjà existant");
+        }
     }
 
     @Override
     public boolean fullResolve(HierarchicalScope<Declaration> _scope) {
+        // ajouter un get avec param 
         throw new SemanticsUndefinedException("fullResolve");
     }
 
     @Override
     public boolean checkType() {
-        throw new SemanticsUndefinedException("checkType");
+        return block.checkType();
     }
 
     @Override
@@ -78,7 +84,11 @@ public class ConstructorDeclaration extends ClassElement implements DeclarationW
 
     @Override
     public Fragment getCode(TAMFactory _factory) {
+        Fragment _result = _factory.createFragment();
+        
+        
         throw new SemanticsUndefinedException("Semantics getCode");
+        return _result;
     }
 
 }

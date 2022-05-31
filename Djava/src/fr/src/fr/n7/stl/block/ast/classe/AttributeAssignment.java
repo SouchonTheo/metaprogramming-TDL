@@ -88,7 +88,8 @@ public class AttributeAssignment extends AbstractIdentifier implements Assignabl
 			_result.add(_factory.createStore(
 					Register.LB, 
 					d.getOffset(),
-					d.getType().length()));		}
+					d.getType().length()));		
+		}
 		return _result;
 	}
 }
