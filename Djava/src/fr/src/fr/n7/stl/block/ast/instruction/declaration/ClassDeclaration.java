@@ -90,12 +90,12 @@ public class ClassDeclaration implements Instruction, Declaration {
 				retour = retour && g.collectAndBackwardResolve(tds);
 			}
             retour = retour && this.heritage.collectAndBackwardResolve(tds);
-            
+
             for(ClassElement c : this.classElements) {
                 if (c instanceof ConstructorDeclaration) {
-                    retour = retour && c.getName().equals(this.name) 
+                    retour = retour && c.getName().equals(this.name);
                 } else {
-                    retour = retour && !c.getName().equals(this.name)
+                    retour = retour && !c.getName().equals(this.name);
                 }
                 retour = retour && c.collectAndBackwardResolve(tds);
             }

@@ -19,7 +19,7 @@ public class ConstructorDeclaration extends ClassElement implements DeclarationW
 
 	protected Block block;
 
-    protected String name; // ?
+    protected String name;
 
    /**
     * List of AST nodes for the formal parameters of the function
