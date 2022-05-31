@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.n7.stl.block.ast.Block;
-import fr.n7.stl.block.ast.SemanticsUndefinedException;
 import fr.n7.stl.block.ast.instruction.declaration.ParameterDeclaration;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
+import fr.n7.stl.block.ast.scope.SymbolTable;
 import fr.n7.stl.block.ast.type.AtomicType;
 import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
@@ -24,6 +24,13 @@ public class MethodDeclaration extends ClassElement implements DeclarationWithPa
 	private boolean isAbstract = false;
 
 	private Register register;
+
+	/**
+	 * Scope
+	 */
+	protected HierarchicalScope<Declaration> tds;
+	
+
 
 	public MethodDeclaration(Signature entete, Block body) {
 		this.entete = entete;
@@ -97,7 +104,17 @@ public class MethodDeclaration extends ClassElement implements DeclarationWithPa
 	 */
 	@Override
 	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
-		throw new SemanticsUndefinedException( "collectAndBackwardResolve");
+		if (_scope.accepts(this)) {
+			_scope.register(this);
+			this.tds = new SymbolTable(_scope);
+			for (ParameterDeclaration p : this.getParameters()) {
+				this.tds.register(p);
+			}
+			return this.body.collectAndBackwardResolve(this.tds);
+		} else {
+			Logger.error("Error : Multiple declarations.");
+			return false;
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -105,13 +122,29 @@ public class MethodDeclaration extends ClassElement implements DeclarationWithPa
 	 */
 	@Override
 	public boolean fullResolve(HierarchicalScope<Declaration> _scope) {
-		throw new SemanticsUndefinedException( "fullResolve");
+		boolean b = true;
+		for (ParameterDeclaration p : this.getParameters()) {
+			b = b && p.getType().resolve(_scope);
+		}
+		return this.body.fullResolve(this.tds) && b;
 	}
 
 	
 	@Override
 	public int allocateMemory(Register _register, int _offset) {
-		throw new SemanticsUndefinedException("allocate Memory");
+		this.register = Register.LB;
+		// On commence par calculer le déplacement total
+		int depl = 0;
+		for (ParameterDeclaration param : this.getParameters()) {
+			depl -= param.getType().length();
+		}
+		// Ensuite on remonte pour affecter petit a petit l'espace des paramètres
+		for (ParameterDeclaration param : this.getParameters()) {
+			param.setOffset(depl);
+			depl += param.getType().length();
+		}
+		this.body.allocateMemory(this.register, 0);
+		return 0;
 	}
 
 	/* (non-Javadoc)
@@ -119,7 +152,17 @@ public class MethodDeclaration extends ClassElement implements DeclarationWithPa
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
-		throw new SemanticsUndefinedException("Semantics getCode");
+		String labelEnd = this.getName() + "_end";
+		Fragment _result = _factory.createFragment();
+		Fragment funcBody = _factory.createFragment();
+		// On prépare le corps de la fonction entouré de labels
+		funcBody.addPrefix(this.getName());
+		funcBody.append(this.body.getCode(_factory));
+		funcBody.addSuffix(labelEnd);
+		// On y rajoute le jump
+		_result.add(_factory.createJump(labelEnd));
+		_result.append(funcBody);
+		return _result;
 	}
 
 	public Block getBody() {
