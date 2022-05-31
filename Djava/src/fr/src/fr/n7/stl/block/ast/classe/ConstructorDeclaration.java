@@ -63,8 +63,11 @@ public class ConstructorDeclaration extends ClassElement implements DeclarationW
 
     @Override
     public boolean fullResolve(HierarchicalScope<Declaration> _scope) {
-        // ajouter un get avec param 
-        throw new SemanticsUndefinedException("fullResolve");
+        boolean b = true;
+		for (ParameterDeclaration p : this.getParameters()) {
+			b = b && p.getType().resolve(_scope);
+		}
+        return this.block.fullResolve(this.tds) && b;
     }
 
     @Override
