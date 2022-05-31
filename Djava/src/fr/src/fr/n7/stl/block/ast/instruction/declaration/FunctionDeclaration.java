@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import fr.n7.stl.block.ast.Block;
+import fr.n7.stl.block.ast.classe.DeclarationWithParameters;
 import fr.n7.stl.block.ast.instruction.Instruction;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
