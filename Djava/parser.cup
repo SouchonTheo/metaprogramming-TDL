@@ -439,7 +439,7 @@ Method ::=
 		UL_Abstrait Signature:entete UL_Point_Virgule
 		{:
 			Method method = new Method(entete);
-			/*En sit pas nécessaire, car la seule fois où ce constructeur est appelé, mais plus clair*/
+			/*En soit pas nécessaire, car la seule fois où ce constructeur est appelé, mais plus clair*/
 			method.setAbstract();
 			RESULT = method;
 		:}
