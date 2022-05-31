@@ -11,7 +11,6 @@ import fr.n7.stl.block.ast.expression.Expression;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
 import fr.n7.stl.block.ast.type.AtomicType;
-import fr.n7.stl.block.ast.type.FunctionType;
 import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.TAMFactory;
@@ -71,7 +70,7 @@ public class MethodCall implements Expression {
 	 */
 	@Override
 	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
-		if (_scope.knows(this.name)){
+		if (_scope.knows(this.name)) {
 			boolean result = true;
 			for (Expression arg : this.arguments) {
 				result = result && arg.collectAndBackwardResolve(_scope);
@@ -104,42 +103,26 @@ public class MethodCall implements Expression {
 			Logger.error("Object not a method");
 			return false;
 		}
-		
+	}
 
-		
-	}
-	/*
 	@Override
 	public Type getType() {
-		Type type = this.function.getType();
-		if (type instanceof FunctionType) {
-			FunctionType functype = (FunctionType) type;
-			return functype.getResultType();
-		} else  {
-			//Branche morte, car erreur attrapée avant au resolve. Laissé par cohérence au niveau des instanceof.
-			Logger.error("Error : not a function type");
-			return AtomicType.ErrorType;
-		}
-	}
-*/
-	@Override
-	public Type getType() {
-		if (this.method.getType() instanceof FunctionType) {
+		if (this.method.getType() instanceof MethodType) {
 			ArrayList<Type> typeList = new ArrayList<Type>();
 			for (int i = 0; i < arguments.size(); i++) {
 				Type argType = this.arguments.get(i).getType();
 				Type paramType = this.method.getParameters().get(i).getType();
 				if (argType.compatibleWith(paramType)) {
-					typeList.add(argType);					
+					typeList.add(argType);
 				} else {
 					Logger.error("Type des arguments différents des paramètres");
 					return AtomicType.ErrorType;
 				}
 			}
-			FunctionType fType = (FunctionType) this.method.getType();
-			FunctionType callType = new FunctionType(this.method.getBody().returnsTo(), typeList);
-			if (callType.compatibleWith(fType)) {
-				return fType.getResultType();
+			MethodType mType = (MethodType) this.method.getType();
+			MethodType callType = new MethodType(this.method.getBody().returnsTo(), typeList);
+			if (callType.compatibleWith(mType)) {
+				return mType.getResultType();
 			} else {
 				Logger.error("Types incompatibles");
 				return AtomicType.ErrorType;

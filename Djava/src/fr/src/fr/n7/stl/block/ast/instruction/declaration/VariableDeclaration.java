@@ -127,10 +127,11 @@ public class VariableDeclaration implements Declaration, Instruction {
 	 */
 	@Override
 	public boolean checkType() {
+		Type realType = this.type;
 		if (this.type instanceof NamedType) {
-			this.type = ((NamedType) this.type).getType();
+			realType = ((NamedType) this.type).getType();
 		}
-		boolean result = this.value.getType().compatibleWith(this.type);
+		boolean result = this.value.getType().compatibleWith(realType);
 		if (! result) {
 			Logger.error("Error : Incompatible type.");
 		}

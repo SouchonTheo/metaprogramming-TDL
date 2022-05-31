@@ -7,8 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fr.n7.stl.block.ast.classe.AttributeDeclaration;
 import fr.n7.stl.block.ast.classe.DeclarationWithParameters;
 import fr.n7.stl.block.ast.instruction.declaration.ParameterDeclaration;
+import fr.n7.stl.block.ast.instruction.declaration.VariableDeclaration;
 
 
 /**
@@ -66,6 +68,31 @@ public class SymbolTable implements HierarchicalScope<Declaration> {
 		return result;
 	}
 
+	// Les variables peuvent avoir le même non qu'un attribut ou qu'une fonction
+	public boolean accepts(VariableDeclaration declaration) {
+		boolean result = true;
+		if (this.contains(declaration.getName())) {
+			Declaration other = this.get(declaration.getName());
+			if (!(other instanceof AttributeDeclaration || other instanceof DeclarationWithParameters)) {
+				result = false;
+			}
+		}
+		return result;
+	}
+
+	// Les attributs peuvent avoir le même non qu'un attribut ou qu'une variable
+	public boolean accepts(AttributeDeclaration declaration) {
+		boolean result = true;
+		if (this.contains(declaration.getName())) {
+			Declaration other = this.get(declaration.getName());
+			if (!(other instanceof VariableDeclaration || other instanceof DeclarationWithParameters)) {
+				result = false;
+			}
+		}
+		return result;
+	}
+
+	// Les fonctions/méthodes/constructeurs peuvent avoir le même non qu'un attribut ou qu'une variable
 	public boolean accepts(DeclarationWithParameters _declaration) {
 		boolean result = true;
 		if (this.contains(_declaration.getName())) {

@@ -38,6 +38,10 @@ public class MethodDeclaration extends ClassElement implements DeclarationWithPa
 		return isAbstract;
 	}
 
+	public Signature getEntete() {
+		return this.entete;
+	}
+
 	public List<ParameterDeclaration> getParameters() {
 		return this.entete.parameters;
 	}

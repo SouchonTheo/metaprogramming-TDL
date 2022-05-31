@@ -1,13 +1,15 @@
 package fr.n7.stl.block.ast.classe;
 
-import fr.n7.stl.block.ast.SemanticsUndefinedException;
 import fr.n7.stl.block.ast.expression.Expression;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
+import fr.n7.stl.block.ast.type.AtomicType;
+import fr.n7.stl.block.ast.type.NamedType;
 import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
+import fr.n7.stl.util.Logger;
 
 public class AttributeDeclaration extends ClassElement {
 
@@ -68,32 +70,52 @@ public class AttributeDeclaration extends ClassElement {
 
     @Override
     public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
-        throw new SemanticsUndefinedException("collectAndBackwardResolve");
+        if (_scope.accepts(this)) {
+            _scope.register(this);
+            return this.value.collectAndBackwardResolve(_scope);
+        } else {
+            Logger.error("This attribute already exists");
+            return false;
+        }
     }
 
     @Override
     public boolean fullResolve(HierarchicalScope<Declaration> _scope) {
-        throw new SemanticsUndefinedException("fullResolve");
+		return this.value.fullResolve(_scope) && this.type.resolve(_scope);
     }
 
     @Override
     public boolean checkType() {
-        throw new SemanticsUndefinedException("checkType");
+        Type realType = this.type;
+		if (this.type instanceof NamedType) {
+			realType = ((NamedType) this.type).getType();
+		}
+		boolean result = this.value.getType().compatibleWith(realType);
+		if (! result) {
+			Logger.error("Error : Incompatible type.");
+		}
+		return result;
     }
 
     @Override
     public Type returnsTo() {
-        throw new SemanticsUndefinedException("returnsTo");
+        return AtomicType.VoidType;
     }
 
     @Override
     public int allocateMemory(Register _register, int _offset) {
-    throw new SemanticsUndefinedException("allocateMemory");
+        this.register = _register;
+		this.offset = _offset;
+		return this.type.length();
     }
 
     @Override
     public Fragment getCode(TAMFactory _factory) {
-        throw new SemanticsUndefinedException("Semantics getCode");
+        Fragment _result = _factory.createFragment();
+		_result.add(_factory.createPush(this.type.length()));
+		_result.append(this.value.getCode(_factory));
+		_result.add(_factory.createStore(this.register, this.offset, this.type.length()));
+		return _result;
     }
 
     
