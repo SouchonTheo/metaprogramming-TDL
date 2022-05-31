@@ -34,7 +34,7 @@ public class ConstructorCall implements Expression {
 	 * Declaration of the called function after name resolution.
 	 * TODO : Should rely on the VariableUse class.
 	 */
-	protected MethodDeclaration method;
+	protected ConstructorDeclaration constructor;
 	
 	/**
 	 * List of AST nodes that computes the values of the parameters for the function call.
@@ -83,7 +83,7 @@ public class ConstructorCall implements Expression {
 		if (((HierarchicalScope<Declaration>)_scope).knows(this.name)) {
 			Declaration _declaration = _scope.get(this.name);
 			if (_declaration instanceof ConstructorDeclaration) {
-				this.declaration = ((ConstructorDeclaration) _declaration);
+				this.constructor = ((ConstructorDeclaration) _declaration);
 				return true;
 			} else {
 				Logger.error("The call for " + this.name + " is of the wrong kind.");
@@ -110,11 +110,11 @@ public class ConstructorCall implements Expression {
 */
 	@Override
 	public Type getType() {
-		if (this.method.getType() instanceof ConstructorType) {
+		if (this.constructor.getType() instanceof ConstructorType) {
 			ArrayList<Type> typeList = new ArrayList<Type>();
 			for (int i = 0; i < arguments.size(); i++) {
 				Type argType = this.arguments.get(i).getType();
-				Type paramType = this.method.getParameters().get(i).getType();
+				Type paramType = this.constructor.getParameters().get(i).getType();
 				if (argType.compatibleWith(paramType)) {
 					typeList.add(argType);					
 				} else {
@@ -122,8 +122,8 @@ public class ConstructorCall implements Expression {
 					return AtomicType.ErrorType;
 				}
 			}
-			FunctionType fType = (FunctionType) this.method.getType();
-			FunctionType callType = new FunctionType(this.method.getBody().returnsTo(), typeList);
+			FunctionType fType = (FunctionType) this.constructor.getType();
+			FunctionType callType = new FunctionType(this.constructor.getBody().returnsTo(), typeList);
 			if (callType.compatibleWith(fType)) {
 				return fType.getResultType();
 			} else {
