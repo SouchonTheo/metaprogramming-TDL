@@ -3,6 +3,10 @@
  */
 package fr.n7.stl.block.ast.scope;
 
+import java.util.List;
+
+import fr.n7.stl.block.ast.type.Type;
+
 /**
  * Interface to mark a node in the Abstract Syntax Tree as a Scope in the language.
  * @author Marc Pantel
@@ -18,6 +22,18 @@ public interface Scope <D extends Declaration> {
 	 * @return : An optional object that carry an element named _name if there exists one in the scope, empty if not.
 	 */
 	public D get(String _name);
+
+
+	/**
+	 * Provide either :
+	 * - an empty option if the name is not contained in the scope.
+	 * - an option contained the first value associated with the name if the name is contained in the scope.
+	 * @param _name : Name of the element looked for in the scope.
+	 * @param parameterTypes : Type of the parameters of the function looked for in the scope.
+	 * @return : An optional object that carry an element named _name if there exists one in the scope, empty if not.
+	 */
+	public D get(String _name, List<Type> parameterTypes);
+
 	
 	/**
 	 * Check if an element is registered (contained) in the current scope.
@@ -27,12 +43,22 @@ public interface Scope <D extends Declaration> {
 	public boolean contains(String _name);
 	
 	/**
+	 * Provide either :
+	 * - an empty option if the name is not contained in the scope.
+	 * - an option contained the first value associated with the name if the name is contained in the scope.
+	 * @param _name : Name of the element looked for in the scope.
+	 * @param parameterTypes : Type of the parameters of the function looked for in the scope.
+	 * @return : An optional object that carry an element named _name if there exists one in the scope, empty if not.
+	 */
+	public boolean contains(String _name, List<Type> parameterTypes);
+
+	/**
 	 * Check if a declaration can be registered in the scope.
 	 * @param _declaration : _declaration which is checked.
 	 * @return : True if the _declaration can be registered in the scope, false if not.
 	 */
 	public boolean accepts(D _declaration);
-	
+
 	/**
 	 * Register a declaration in the scope.
 	 * @param _declaration : _declaration to be registered in the scope.
