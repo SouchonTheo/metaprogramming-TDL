@@ -1,5 +1,8 @@
 package fr.n7.stl.block.ast.classe;
 
-public abstract class InterfaceElement {
+import fr.n7.stl.block.ast.instruction.Instruction;
+import fr.n7.stl.block.ast.scope.Declaration;
+
+public abstract class InterfaceElement implements Instruction, Declaration {
     
 }

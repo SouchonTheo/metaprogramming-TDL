@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import fr.n7.stl.block.ast.Block;
+import fr.n7.stl.block.ast.classe.ClassElement;
+import fr.n7.stl.block.ast.classe.ConstructorDeclaration;
 import fr.n7.stl.block.ast.instruction.Instruction;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
@@ -41,17 +43,19 @@ public class ClassDeclaration implements Instruction, Declaration {
      */
     List<Instance> _interfaces;
 
+    protected List<ClassElement> classElements;
+
     /**
     * Scope
     */
     protected HierarchicalScope<Declaration> tds;
 
-    public ClassDeclaration(String _name, List<TypeParameter> _generiques, Instance _heritage, List<Instance> _interfaces, List<ClassElement> _classeElements) {
+    public ClassDeclaration(String _name, List<TypeParameter> _generiques, Instance _heritage, List<Instance> _interfaces, List<ClassElement> _classElements) {
         this.name = _name;
         this.generiques = _generiques;
         this.heritage = _heritage;
         this.interfaces = _interfaces;
-        this.classeElements = _classeElements;
+        this.classElements = _classElements;
     }
 
     public String toString() {
@@ -86,8 +90,13 @@ public class ClassDeclaration implements Instruction, Declaration {
 				retour = retour && g.collectAndBackwardResolve(tds);
 			}
             retour = retour && this.heritage.collectAndBackwardResolve(tds);
-            for(ClassElement c : this.classeElements){
-                
+            
+            for(ClassElement c : this.classElements) {
+                if (c instanceof ConstructorDeclaration) {
+                    retour = retour && c.getName().equals(this.name) 
+                } else {
+                    retour = retour && !c.getName().equals(this.name)
+                }
                 retour = retour && c.collectAndBackwardResolve(tds);
             }
 			return retour;

@@ -5,7 +5,6 @@ import java.util.List;
 
 import fr.n7.stl.block.ast.Block;
 import fr.n7.stl.block.ast.SemanticsUndefinedException;
-import fr.n7.stl.block.ast.instruction.Instruction;
 import fr.n7.stl.block.ast.instruction.declaration.ParameterDeclaration;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
@@ -16,7 +15,7 @@ import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
 import fr.n7.stl.util.Logger;
 
-public class MethodDeclaration extends ClassElement implements Instruction, Declaration  {
+public class MethodDeclaration extends ClassElement implements DeclarationWithParameters {
 
     protected Signature entete;
 

@@ -1,10 +1,10 @@
 package fr.n7.stl.block.ast.classe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.n7.stl.block.ast.Block;
 import fr.n7.stl.block.ast.SemanticsUndefinedException;
-import fr.n7.stl.block.ast.instruction.Instruction;
 import fr.n7.stl.block.ast.instruction.declaration.ParameterDeclaration;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
@@ -14,7 +14,7 @@ import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
 
-public class ConstructorDeclaration extends ClassElement implements Instruction, Declaration {
+public class ConstructorDeclaration extends ClassElement implements DeclarationWithParameters{
     
 
 	protected Block block;
@@ -33,17 +33,22 @@ public class ConstructorDeclaration extends ClassElement implements Instruction,
     }
 
     public ConstructorDeclaration(String name, Block block) {
-        this(name,block, null);
+        this(name,block, new ArrayList<ParameterDeclaration>());
     }
-
+    
     @Override
     public String getName() {
         return this.name;
     }
-
+    
     @Override
     public Type getType() {
         throw new SemanticsUndefinedException("getType");
+    }
+    
+    @Override
+    public List<ParameterDeclaration> getParameters() {
+        return this.parameters;
     }
 
     @Override
@@ -75,4 +80,5 @@ public class ConstructorDeclaration extends ClassElement implements Instruction,
     public Fragment getCode(TAMFactory _factory) {
         throw new SemanticsUndefinedException("Semantics getCode");
     }
+
 }

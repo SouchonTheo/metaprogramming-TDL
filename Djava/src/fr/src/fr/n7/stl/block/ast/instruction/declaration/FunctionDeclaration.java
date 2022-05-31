@@ -23,7 +23,7 @@ import fr.n7.stl.util.Logger;
  * Abstract Syntax Tree node for a function declaration.
  * @author Marc Pantel
  */
-public class FunctionDeclaration implements Instruction, Declaration {
+public class FunctionDeclaration implements Instruction, DeclarationWithParameters {
 
 	/**
 	 * Name of the function

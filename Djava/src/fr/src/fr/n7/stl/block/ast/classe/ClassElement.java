@@ -1,6 +1,9 @@
 package fr.n7.stl.block.ast.classe;
 
-public abstract class ClassElement {
+import fr.n7.stl.block.ast.instruction.Instruction;
+import fr.n7.stl.block.ast.scope.Declaration;
+
+public abstract class ClassElement implements Instruction, Declaration {
 
     /**
 	 * AST node for the initial access right of the declared classAttribute.

@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fr.n7.stl.block.ast.classe.DeclarationWithParameters;
+import fr.n7.stl.block.ast.instruction.declaration.ParameterDeclaration;
+
 
 /**
  * Implementation of a hierarchical scope using maps.
@@ -56,7 +59,26 @@ public class SymbolTable implements HierarchicalScope<Declaration> {
 	 */
 	@Override
 	public boolean accepts(Declaration _declaration) {
-		return (! this.contains(_declaration.getName()));
+		boolean result = true;
+		if (this.contains(_declaration.getName()) && !(this.get(_declaration.getName()) instanceof DeclarationWithParameters)) {
+			result = false;
+		}
+		return result;
+	}
+
+	public boolean accepts(DeclarationWithParameters _declaration) {
+		boolean result = true;
+		if (this.contains(_declaration.getName())) {
+			if (this.get(_declaration.getName()) instanceof DeclarationWithParameters) {
+				DeclarationWithParameters other = (DeclarationWithParameters) this.get(_declaration.getName());
+				for (int i = 0 ; i < other.getParameters().size() ; i++) {
+					ParameterDeclaration declaParam = _declaration.getParameters().get(i);
+					ParameterDeclaration otherParam = other.getParameters().get(i); 
+					result = result && !declaParam.getType().equals(otherParam.getType());
+				}
+			}
+		} 
+		return result;
 	}
 
 	/* (non-Javadoc)
