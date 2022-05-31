@@ -21,6 +21,11 @@ public class ConstructorDeclaration extends ClassElement implements DeclarationW
 
     protected String name;
 
+    /**
+	 * Scope
+	 */
+	protected HierarchicalScope<Declaration> tds;
+
    /**
     * List of AST nodes for the formal parameters of the function
     */
