@@ -43,6 +43,13 @@ public class Block {
 		this.instructions = _instructions;
 	}
 	
+	/**
+	 * Constructor for a block.
+	 */
+	public Block() {
+		this.instructions = new ArrayList<Instruction>();
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
