@@ -1,6 +1,5 @@
 package fr.n7.stl.block.ast;
 
-import java.net.InterfaceAddress;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -18,7 +18,6 @@ public class ClassType implements Type {
         return this.instance;
     }
 
-
     @Override
     public boolean equalsTo(Type _other) {
         if (_other instanceof ClassType) {
@@ -79,5 +78,4 @@ public class ClassType implements Type {
         }
         return result;
     }
-
 }

@@ -1,5 +1,6 @@
 package fr.n7.stl.block.ast.classe;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,12 +20,12 @@ public class Signature extends InterfaceElement implements DeclarationWithParame
 	 * Name of the function
 	 */
 	protected String name;
-	
+
 	/**
 	 * AST node for the returned type of the function
 	 */
 	protected Type type;
-	
+
 	/**
 	 * List of AST nodes for the formal parameters of the function
 	 */
@@ -37,7 +38,7 @@ public class Signature extends InterfaceElement implements DeclarationWithParame
     }
 
     public Signature (Type type, String name) {
-        this(type, name, new List<ParameterDeclaration>());
+        this(type, name, new ArrayList<ParameterDeclaration>());
     }
 
     public String toString() {
@@ -96,7 +97,7 @@ public class Signature extends InterfaceElement implements DeclarationWithParame
 
     @Override
     public boolean fullResolve(HierarchicalScope<Declaration> _scope) {
-        throw new SemanticsUndefinedException("fullResolve");
+        return true;
     }
 
     @Override
