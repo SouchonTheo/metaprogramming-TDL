@@ -769,9 +769,9 @@ class CUP$Parser$actions {
 				/*ajout miniJava*/
 				SymbolTable tds = new SymbolTable();
 				System.out.println( "Elements of the programms : " + elements);
-				if (elements.collectAndBackwardResolve(tds)) {
+				if (((Programme) elements).collectAndBackwardResolve(tds)) {
 					System.out.println("Collect succeeded : " + tds);
-					if (elements.fullResolve(tds)) {
+					if (((Programme) elements).fullResolve(tds)) {
 						System.out.println("Resolve succeeded.");
 					} else {
 						System.out.println("Resolve failed." + tds);
@@ -807,9 +807,9 @@ class CUP$Parser$actions {
 		Object principal = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		//@@CUPDBG4
 
-			Programme _elements = new Programme();
-			_elements.addPrincipalClass(principal);
-			RESULT = _elements;
+			Programme elements = new Programme();
+			((Programme) elements).addPrincipalClass((MainDeclaration)principal);
+			RESULT = elements;
 		
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Elements",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -827,7 +827,7 @@ class CUP$Parser$actions {
 		Object elements = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		//@@CUPDBG5
 
-			elements.addInterface(_interface);
+			((Programme) elements).addInterface((InterfaceDeclaration)_interface);
 			RESULT = elements;
 		
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Elements",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -846,7 +846,7 @@ class CUP$Parser$actions {
 		Object elements = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		//@@CUPDBG6
 
-			elements.addClass(_class);
+			((Programme) elements).addClass((ClassDeclaration)_class);
 			RESULT = elements;
 		
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Elements",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -865,8 +865,8 @@ class CUP$Parser$actions {
 		Object elements = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		//@@CUPDBG7
 
-			_class.setAbstract();
-			elements.addClass(_class);
+			((ClassDeclaration)_class).setAbstract();
+			((Programme) elements).addClass((ClassDeclaration)_class);
 			RESULT = elements;
 		
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Elements",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -885,8 +885,8 @@ class CUP$Parser$actions {
 		Object elements = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		//@@CUPDBG8
 
-			_class.setFinal();
-			elements.addClass(_class);
+			((ClassDeclaration)_class).setFinal();
+			((Programme) elements).addClass((ClassDeclaration)_class);
 			RESULT = elements;
 		
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Elements",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -911,7 +911,7 @@ class CUP$Parser$actions {
 		Object interfaceElements = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		//@@CUPDBG9
 
-			RESULT = new InterfaceDeclaration(nom,generiques,heritages,interfaceElements);
+			RESULT = new InterfaceDeclaration(nom,(List<TypeParameter>)generiques,heritages,interfaceElements);
 		
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Interface",19, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-6)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -1032,7 +1032,7 @@ class CUP$Parser$actions {
 		//@@CUPDBG16
 
 			List<Instance> _contraintes = new LinkedList<Instance>();
-			_contraintes.add(instance);
+			_contraintes.add((Instance)instance);
 			RESULT = _contraintes;
 		
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Constraints",23, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -1051,7 +1051,7 @@ class CUP$Parser$actions {
 		Object contraintes = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		//@@CUPDBG17
 
-			contraintes.add(instance);
+			contraintes.add((Instance)instance);
 			RESULT = contraintes;
 		
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Constraints",23, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -1068,7 +1068,7 @@ class CUP$Parser$actions {
 		//@@CUPDBG18
 
 			List<TypeParameter> _typeParameters = new LinkedList<TypeParameter>();
-			_contraintes.add(typeParameter);
+			_contraintes.add((TypeParameter)typeParameter);
 			RESULT = _typeParameters;
 		
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("TypeParameters",22, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -1615,7 +1615,7 @@ class CUP$Parser$actions {
 		Block block = (Block)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		//@@CUPDBG51
 
-			RESULT = new Constructor(nom,block);
+			RESULT = new ConstructorDeclaration(nom,block);
 		
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Constructor",36, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -1636,7 +1636,7 @@ class CUP$Parser$actions {
 		Block block = (Block)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		//@@CUPDBG52
 
-			RESULT = new Constructor(nom,block,parametres);
+			RESULT = new ConstructorDeclaration(nom,block,parametres);
 		
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Constructor",36, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

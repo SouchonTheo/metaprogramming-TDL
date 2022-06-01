@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import fr.n7.stl.block.ast.Block;
+import fr.n7.stl.block.ast.classe.MethodDeclaration;
 import fr.n7.stl.block.ast.classe.Instance;
 import fr.n7.stl.block.ast.classe.Signature;
 import fr.n7.stl.block.ast.classe.InterfaceElement;
@@ -56,7 +57,7 @@ public class InterfaceDeclaration implements Instruction, Declaration {
     }
 
     public List<Signature> getMethods(HierarchicalScope<Declaration> _scope) {
-        List<Signature> methods = new ArrayList<MethodDeclaration>();
+        List<Signature> methods = new ArrayList<Signature>();
         for(Instance i : this.heritages) {
             Declaration tempDeclaration = i.instanciate(_scope);
             //Vérifier qu'il s'agit bien d'une interface
@@ -66,11 +67,11 @@ public class InterfaceDeclaration implements Instruction, Declaration {
                 methods.addAll(inter.getMethods(_scope));
             } else {
                 Logger.error("Class "+ this.name + " implements "+ tempDeclaration.getName() + ", something else than an interface");
-                return false;
+                return new ArrayList<Signature>();
             }
         }
         for(InterfaceElement i: this.interfaceElements) {
-            methods.add(i);
+            methods.add(i.getSignature());
         }
         return methods;
     }

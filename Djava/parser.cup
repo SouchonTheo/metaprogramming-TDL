@@ -155,9 +155,9 @@ Program ::= /* retrait miniJava
 				/*ajout miniJava*/
 				SymbolTable tds = new SymbolTable();
 				System.out.println( "Elements of the programms : " + elements);
-				if (elements.collectAndBackwardResolve(tds)) {
+				if (((Programme) elements).collectAndBackwardResolve(tds)) {
 					System.out.println("Collect succeeded : " + tds);
-					if (elements.fullResolve(tds)) {
+					if (((Programme) elements).fullResolve(tds)) {
 						System.out.println("Resolve succeeded.");
 					} else {
 						System.out.println("Resolve failed." + tds);
@@ -171,30 +171,30 @@ Program ::= /* retrait miniJava
 /* ajout miniJava : classes, interfaces, attributs, méthodes, constructeurs, etc */
 Elements ::= Main:principal
 		{:
-			Programme _elements = new Programme();
-			_elements.addPrincipalClass(principal);
-			RESULT = _elements;
+			Programme elements = new Programme();
+			((Programme) elements).addPrincipalClass((MainDeclaration)principal);
+			RESULT = elements;
 		:}
 		| Interface:_interface Elements:elements
 		{:
-			elements.addInterface(_interface);
+			((Programme) elements).addInterface((InterfaceDeclaration)_interface);
 			RESULT = elements;
 		:}
 		| Class:_class Elements:elements
 		{:
-			elements.addClass(_class);
+			((Programme) elements).addClass((ClassDeclaration)_class);
 			RESULT = elements;
 		:}
 		| UL_Abstrait Class:_class Elements:elements
 		{:
-			_class.setAbstract();
-			elements.addClass(_class);
+			((ClassDeclaration)_class).setAbstract();
+			((Programme) elements).addClass((ClassDeclaration)_class);
 			RESULT = elements;
 		:}
 		| UL_Definitif Class:_class Elements:elements
 		{:
-			_class.setFinal();
-			elements.addClass(_class);
+			((ClassDeclaration)_class).setFinal();
+			((Programme) elements).addClass((ClassDeclaration)_class);
 			RESULT = elements;
 		:}
 		;
@@ -202,7 +202,7 @@ Elements ::= Main:principal
 Interface ::= UL_Interface UL_Identificateur:nom Generics:generiques MultipleInherits:heritages
 		UL_Accolade_Ouvrante InterfaceElements:interfaceElements UL_Accolade_Fermante
 		{:
-			RESULT = new InterfaceDeclaration(nom,generiques,heritages,interfaceElements);
+			RESULT = new InterfaceDeclaration(nom,(List<TypeParameter>)generiques,heritages,interfaceElements);
 		:}
 		;
 		
@@ -247,12 +247,12 @@ TypeParameter ::= UL_Identificateur:etiquette
 Constraints ::= Instance:instance
 		{:
 			List<Instance> _contraintes = new LinkedList<Instance>();
-			_contraintes.add(instance);
+			_contraintes.add((Instance)instance);
 			RESULT = _contraintes;
 		:}
 		| Instance:instance UL_Esperluette Constraints:contraintes
 		{:
-			contraintes.add(instance);
+			contraintes.add((Instance)instance);
 			RESULT = contraintes;
 		:}
 		;
@@ -260,7 +260,7 @@ Constraints ::= Instance:instance
 TypeParameters ::= TypeParameter:typeParameter
 		{:
 			List<TypeParameter> _typeParameters = new LinkedList<TypeParameter>();
-			_contraintes.add(typeParameter);
+			_contraintes.add((TypeParameter)typeParameter);
 			RESULT = _typeParameters;
 		:}
 		| TypeParameter:typeParameter UL_Virgule TypeParameters:typeParameters
@@ -449,24 +449,24 @@ Method ::=
 Signature ::=
 		Type:type Identifiant:identifiant UL_Parenthese_Ouvrante Parameters:parametres UL_Parenthese_Fermante
 		{:
-			RESULT = new Signature(type,identifiant, parametres);
+			RESULT = new Signature(type,(Pair<String,PartialType>)identifiant, parametres);
 		:}
 		|
 		Type:type Identifiant:identifiant UL_Parenthese_Ouvrante UL_Parenthese_Fermante
 		{:
-			RESULT = new Signature(type,identifiant);
+			RESULT = new Signature(type,(Pair<String,PartialType>)identifiant);
 		:}
 		;
 		
 Constructor ::=
 		UL_Identificateur:nom UL_Parenthese_Ouvrante UL_Parenthese_Fermante Block:block
 		{:
-			RESULT = new Constructor(nom,block);
+			RESULT = new ConstructorDeclaration(nom,block);
 		:}
 		|
 		UL_Identificateur:nom UL_Parenthese_Ouvrante Parameters:parametres UL_Parenthese_Fermante Block:block
 		{:
-			RESULT = new Constructor(nom,block,parametres);
+			RESULT = new ConstructorDeclaration(nom,block,parametres);
 		:}
 		;
 

@@ -125,9 +125,6 @@ public class ClassDeclaration implements Instruction, Declaration {
 			for (TypeParameter g : this.generiques){
 				retour = retour && g.collectAndBackwardResolve(tds);
 			}
-            for (Instance i : this.interfaces){
-				retour = retour && i.collectAndBackwardResolve(tds);
-			}
 
             for(ClassElement c : this.classElements) {
                 if (c instanceof ConstructorDeclaration) {

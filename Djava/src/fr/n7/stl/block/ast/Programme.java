@@ -1,5 +1,7 @@
 package fr.n7.stl.block.ast;
 
+import java.net.InterfaceAddress;
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.n7.stl.block.ast.instruction.declaration.ClassDeclaration;
@@ -13,10 +15,22 @@ import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
 import fr.n7.stl.util.Logger;
 public class Programme {
-    protected List<InterfaceDeclaration> interfaces;
-    protected List<ClassDeclaration> classes;
+    protected List<InterfaceDeclaration> interfaces = new ArrayList<InterfaceDeclaration>();
+    protected List<ClassDeclaration> classes = new ArrayList<ClassDeclaration>();
     protected MainDeclaration principal;
 	protected HierarchicalScope<Declaration> tds;
+
+	public void addInterface(InterfaceDeclaration i) {
+		interfaces.add(i);
+	}
+
+	public void addClass(ClassDeclaration c) {
+		classes.add(c);
+	}
+
+	public void addPrincipalClass(MainDeclaration principal) {
+		this.principal = principal;
+	}
 
     /* (non-Javadoc)
 	 * @see java.lang.Object#toString()

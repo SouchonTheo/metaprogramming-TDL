@@ -37,7 +37,7 @@ public class Signature extends InterfaceElement implements DeclarationWithParame
     }
 
     public Signature (Type type, String name) {
-        this(type, name, null);
+        this(type, name, new List<ParameterDeclaration>());
     }
 
     public String toString() {
@@ -57,6 +57,10 @@ public class Signature extends InterfaceElement implements DeclarationWithParame
         return this.name;
     }
 
+    public Signature getSignature(){
+        return this;
+    }
+
     @Override
     public Type getType() {
         return this.type;
@@ -68,7 +72,7 @@ public class Signature extends InterfaceElement implements DeclarationWithParame
     }
 
     public boolean equals(Signature other) {
-        boolean result = true;
+        boolean result = this.type.equalsTo(other.getType());
         result = result && this.getName().equals(other.getName());
         result = result && other.getParameters().size() == this.getParameters().size();
         for (int i = 0 ; i < other.getParameters().size() ; i++) {
