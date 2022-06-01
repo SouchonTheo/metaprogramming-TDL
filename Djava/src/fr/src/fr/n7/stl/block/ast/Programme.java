@@ -2,15 +2,12 @@ package fr.n7.stl.block.ast;
 
 import java.util.List;
 
-import fr.n7.stl.block.ast.instruction.Instruction;
 import fr.n7.stl.block.ast.instruction.declaration.ClassDeclaration;
 import fr.n7.stl.block.ast.instruction.declaration.InterfaceDeclaration;
 import fr.n7.stl.block.ast.instruction.declaration.MainDeclaration;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
 import fr.n7.stl.block.ast.scope.SymbolTable;
-import fr.n7.stl.block.ast.type.AtomicType;
-import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;

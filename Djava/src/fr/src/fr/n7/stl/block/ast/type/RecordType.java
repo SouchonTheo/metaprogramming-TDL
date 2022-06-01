@@ -254,4 +254,14 @@ public class RecordType implements Type, Declaration, Scope<FieldDeclaration> {
 	public Type getType() {
 		return this;
 	}
+
+	@Override
+	public FieldDeclaration get(String _name, List<Type> parameterTypes) {
+		return this.get(_name);
+	}
+
+	@Override
+	public boolean contains(String _name, List<Type> parameterTypes) {
+		return this.contains(_name);
+	}
 }
