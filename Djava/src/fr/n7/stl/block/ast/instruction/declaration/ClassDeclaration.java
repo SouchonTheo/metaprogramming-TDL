@@ -113,6 +113,17 @@ public class ClassDeclaration implements Instruction, Declaration {
         return methods;
     }
 
+    public List<ConstructorDeclaration> getConstructors(HierarchicalScope<Declaration> _scope) {
+        List<ConstructorDeclaration> constructors = new ArrayList<ConstructorDeclaration>();
+
+        for(ClassElement c: this.classElements) {
+            if(c instanceof ConstructorDeclaration) {
+                methods.add((ConstructorDeclaration) c);
+            }
+        }
+        return constructors;
+    }
+
 
     /* (non-Javadoc)
 	 * @see fr.n7.stl.block.ast.instruction.Instruction#collect(fr.n7.stl.block.ast.scope.Scope)
@@ -124,6 +135,9 @@ public class ClassDeclaration implements Instruction, Declaration {
 			boolean retour = true;
 			for (TypeParameter g : this.generiques){
 				retour = retour && g.collectAndBackwardResolve(tds);
+			}
+            for (Instance i : this.interfaces){
+				retour = retour && i.collectAndBackwardResolve(tds);
 			}
 
             for(ClassElement c : this.classElements) {
@@ -175,7 +189,20 @@ public class ClassDeclaration implements Instruction, Declaration {
                 result = result && temp;
             }
 
- 
+            List<ConstructorDeclaration> constructors = this.getConstructors(_scope);
+            boolean constrDefault = true;
+            for(ConstructorDeclaration c : constructors) {
+                if (c.getParameters().length() == 0) {
+                    constrDefault = false;
+                }
+            }
+
+            if (constrDefault) {
+                Block block = new Block();
+                this.classElements.add(new ConstructorDeclaration(this.name, block));
+            }
+
+            return result;
         }
 
         //Récupérer les méthodes des interfaces
