@@ -3,7 +3,7 @@ package fr.n7.stl.block.ast.instruction.declaration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+import fr.n7.stl.block.ast.classe;
 import fr.n7.stl.block.ast.Block;
 import fr.n7.stl.block.ast.classe.InterfaceElement;
 import fr.n7.stl.block.ast.instruction.Instruction;
@@ -52,6 +52,26 @@ public class InterfaceDeclaration implements Instruction, Declaration {
         this.generiques = _generiques;
         this.heritages = _heritages;
         this.interfaceElements = _interfaceElements;
+    }
+
+    public List<Signature> getMethods(HierarchicalScope<Declaration> _scope) {
+        List<Signature> methods = new ArrayList<MethodDeclaration>();
+        for(Instance i : this.heritages) {
+            Declaration tempDeclaration = i.instanciate(_scope);
+            //Vérifier qu'il s'agit bien d'une interface
+            if (tempDeclaration instanceof InterfaceDeclaration) {
+                InterfaceDeclaration inter = (InterfaceDeclaration) tempDeclaration;
+                //Récupérer les méthodes de l'interface.
+                methods.addAll(inter.getMethods(_scope));
+            } else {
+                Logger.error("Class "+ this.name + " implements "+ tempDeclaration.getName() + ", something else than an interface");
+                return false;
+            }
+        }
+        for(InterfaceElement i: this.interfaceElements) {
+            methods.add(i);
+        }
+        return methods;
     }
 
     public String toString() {

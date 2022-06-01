@@ -67,6 +67,16 @@ public class Signature extends InterfaceElement implements DeclarationWithParame
         return this.parameters;
     }
 
+    public boolean equals(Signature other) {
+        boolean result = true;
+        result = result && this.getName().equals(other.getName());
+        for (int i = 0 ; i < other.getParameters().size() ; i++) {
+            ParameterDeclaration declaParam = _declaration.getParameters().get(i);
+            ParameterDeclaration otherParam = other.getParameters().get(i); 
+            result = result && !declaParam.getType().equals(otherParam.getType());
+        }
+    }
+
     @Override
     public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
         if (_scope.accepts(this)) {

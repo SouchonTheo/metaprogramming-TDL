@@ -8,7 +8,6 @@
     - FunctionType ~ (merge/length)
     - PointerType ~ (length)
 
-
 - Creer toutes les classes correspondantes
 - faire le collectAndBackwardResolve
 -faire le fullResolve
@@ -22,3 +21,15 @@ Si on veut plutôt faire en profondeur (ie finir complètement un bout de l'anal
 - l'héritage des interfaces
 - l'héritage des classes
 -la généricité.
+
+fullResolve des classes :
+
+~ récupérer la classe héritée (si il n'y en a pas, null ou object ?)
+~ récupérer les méthodes de la classe héritée
+~ séprarer les méthodes abstraites et concrètes
+~ Créer une fonction de comparaison entre signature et méthode
+~ vérifier que toutes les méthodes abstraites sont concrétisées
+~ récupérer les interfaces
+~ récupérer les signatures des méthodes des interfaces
+~ vérifier que les méthodes des interfaces sont implémentées
+~ Faire le fullResolve sur les éléments.
