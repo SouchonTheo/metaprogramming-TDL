@@ -13,6 +13,7 @@ import java.util.*;
 
 // Elements du métamodèle pour la construction de l'arbre abstrait
 import fr.n7.stl.block.ast.*;
+import fr.n7.stl.block.ast.classe.*;
 import fr.n7.stl.block.ast.expression.*;
 import fr.n7.stl.block.ast.expression.accessible.*;
 import fr.n7.stl.block.ast.expression.allocation.*;
@@ -154,9 +155,9 @@ Program ::= /* retrait miniJava
 				/*ajout miniJava*/
 				SymbolTable tds = new SymbolTable();
 				System.out.println( "Elements of the programms : " + elements);
-				if (elements.collect(tds)) {
+				if (elements.collectAndBackwardResolve(tds)) {
 					System.out.println("Collect succeeded : " + tds);
-					if (elements.resolve(tds)) {
+					if (elements.fullResolve(tds)) {
 						System.out.println("Resolve succeeded.");
 					} else {
 						System.out.println("Resolve failed." + tds);
@@ -276,7 +277,7 @@ SingleInherits ::= /* Lambda */
 		|
 		UL_Herite Instance:instance
 		{:
-			RESULT = instance
+			RESULT = instance;
 		:}
 		;
 		
@@ -323,7 +324,7 @@ Instance ::= UL_Identificateur:etiquette
 		:}
 		| Instance:instance UL_Inferieur Instances:instances UL_Superieur
 		{:
-			instance.addInstances(instances)
+			instance.addInstances(instances);
 			RESULT = instance;
 		:}
 		;
@@ -729,11 +730,11 @@ Instruction ::= Declaration:declaration
 				{: 
 					RESULT = new Conditional( condition, alors, sinon); 
 				:}
-			| UL_Si UL_Parenthese_Ouvrante Expression:condition UL_Parenthese_Fermante Bloc:alors
+			| UL_Si UL_Parenthese_Ouvrante Expression:condition UL_Parenthese_Fermante Block:alors
 				{: 
 					RESULT = new Conditional( condition, alors); 
 				:}
-			|UL_Tant_Que UL_Parenthese_Ouvrante Expression:condition UL_Parenthese_Fermante Bloc:corps
+			|UL_Tant_Que UL_Parenthese_Ouvrante Expression:condition UL_Parenthese_Fermante Block:corps
 				{:
 					RESULT = new Iteration( condition, corps);
 				:}

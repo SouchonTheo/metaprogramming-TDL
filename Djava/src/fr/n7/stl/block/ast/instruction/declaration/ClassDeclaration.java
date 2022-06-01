@@ -4,9 +4,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import fr.n7.stl.block.ast.classe;
 import fr.n7.stl.block.ast.Block;
+import fr.n7.stl.block.ast.classe.Signature;
 import fr.n7.stl.block.ast.classe.AccessRight;
+import fr.n7.stl.block.ast.classe.Instance;
 import fr.n7.stl.block.ast.classe.ClassElement;
 import fr.n7.stl.block.ast.classe.ConstructorDeclaration;
 import fr.n7.stl.block.ast.classe.MethodDeclaration;
@@ -101,12 +102,12 @@ public class ClassDeclaration implements Instruction, Declaration {
                 methods = superClass.getMethods(_scope);
             } else {
                 Logger.error("Class "+ this.name + " extends something else than a class");
-                return false;
+                return new ArrayList<MethodDeclaration>();
             }
         }
         for(ClassElement c: this.classElements) {
             if(c instanceof MethodDeclaration) {
-                methods.add(c);
+                methods.add((MethodDeclaration)c);
             }
         }
         return methods;
@@ -125,9 +126,8 @@ public class ClassDeclaration implements Instruction, Declaration {
 				retour = retour && g.collectAndBackwardResolve(tds);
 			}
             for (Instance i : this.interfaces){
-				retour = retour && g.collectAndBackwardResolve(tds);
+				retour = retour && i.collectAndBackwardResolve(tds);
 			}
-            retour = retour && this.heritage.collectAndBackwardResolve(tds);
 
             for(ClassElement c : this.classElements) {
                 if (c instanceof ConstructorDeclaration) {
@@ -169,7 +169,7 @@ public class ClassDeclaration implements Instruction, Declaration {
                     //Les accès de l'abstrait sont plus restrictifs que le concret
                     cm.getAccess() == AccessRight.PUBLIC
                     || (cm.getAccess() == AccessRight.PROTECTED && am.getAccess() !=AccessRight.PUBLIC)
-                    || (cm.getAccess() == AccessRight.Private && am.getAccess() == AccessRight.PRIVATE)));
+                    || (cm.getAccess() == AccessRight.PRIVATE && am.getAccess() == AccessRight.PRIVATE)));
                 }
                 if(!temp) {
                     Logger.error("Abstract method " + am + " not implemented in class " + this);
@@ -223,7 +223,13 @@ public class ClassDeclaration implements Instruction, Declaration {
     }
         
         
-
+    public boolean checkType(){
+        boolean result = true;
+        for (ClassElement c : classElements) {
+            result = result && c.checkType();
+        }
+        return result;
+    }
 
     
 
