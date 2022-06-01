@@ -12,6 +12,7 @@ import java.util.Set;
 
 import fr.n7.stl.block.ast.classe.AttributeDeclaration;
 import fr.n7.stl.block.ast.classe.DeclarationWithParameters;
+import fr.n7.stl.block.ast.instruction.declaration.ConstantDeclaration;
 import fr.n7.stl.block.ast.instruction.declaration.ParameterDeclaration;
 import fr.n7.stl.block.ast.instruction.declaration.VariableDeclaration;
 import fr.n7.stl.block.ast.type.Type;
@@ -89,9 +90,17 @@ public class SymbolTable implements HierarchicalScope<Declaration> {
 		boolean result = true;
 		if (this.contains(declaration.getName())) {
 			Declaration other = this.get(declaration.getName());
-			if (!(other instanceof AttributeDeclaration || other instanceof DeclarationWithParameters)) {
-				result = false;
-			}
+			result = other instanceof AttributeDeclaration;
+		}
+		return result;
+	}
+
+	// Les variables peuvent avoir le même non qu'un attribut ou qu'une fonction
+	public boolean accepts(ConstantDeclaration declaration) {
+		boolean result = true;
+		if (this.contains(declaration.getName())) {
+			Declaration other = this.get(declaration.getName());
+			result = other instanceof AttributeDeclaration;
 		}
 		return result;
 	}
@@ -101,7 +110,7 @@ public class SymbolTable implements HierarchicalScope<Declaration> {
 		boolean result = true;
 		if (this.contains(declaration.getName())) {
 			Declaration other = this.get(declaration.getName());
-			if (!(other instanceof VariableDeclaration || other instanceof DeclarationWithParameters)) {
+			if (!(other instanceof VariableDeclaration || other instanceof ConstantDeclaration)) {
 				result = false;
 			}
 		}
@@ -109,19 +118,12 @@ public class SymbolTable implements HierarchicalScope<Declaration> {
 	}
 
 	// Les fonctions/méthodes/constructeurs peuvent avoir le même non qu'un attribut ou qu'une variable
-	public boolean accepts(DeclarationWithParameters _declaration) {
-		boolean result = true;
-		if (this.contains(_declaration.getName())) {
-			if (this.get(_declaration.getName()) instanceof DeclarationWithParameters) {
-				DeclarationWithParameters other = (DeclarationWithParameters) this.get(_declaration.getName());
-				for (int i = 0 ; i < other.getParameters().size() ; i++) {
-					ParameterDeclaration declaParam = _declaration.getParameters().get(i);
-					ParameterDeclaration otherParam = other.getParameters().get(i); 
-					result = result && !declaParam.getType().equals(otherParam.getType());
-				}
-			}
-		} 
-		return result;
+	public boolean accepts(DeclarationWithParameters declaration) {
+		List<Type> types = new ArrayList<Type>();
+		for (ParameterDeclaration param : declaration.getParameters()) {
+			types.add(param.getType());
+		}
+		return !this.contains(declaration.getName(), types);
 	}
 
 	/* (non-Javadoc)
