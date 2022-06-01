@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.n7.stl.block.ast.Block;
-import fr.n7.stl.block.ast.SemanticsUndefinedException;
 import fr.n7.stl.block.ast.instruction.declaration.ParameterDeclaration;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
@@ -25,7 +24,7 @@ public class ConstructorDeclaration extends ClassElement implements DeclarationW
 
     private Register register;
 
-    private Type type;
+    private Type returnType;
 
     /**
 	 * Scope
@@ -40,7 +39,7 @@ public class ConstructorDeclaration extends ClassElement implements DeclarationW
     public ConstructorDeclaration(String name, Block body, List<ParameterDeclaration> parameters) {
         this.name = name;
         this.body = body;
-        this.type = new Instance(this.name);
+        this.returnType = new ClassType(new Instance(this.name));
         this.parameters = parameters;
     }
 
@@ -63,7 +62,7 @@ public class ConstructorDeclaration extends ClassElement implements DeclarationW
 
     @Override
     public Type getType() {
-        if (!this.body.returnsTo().compatibleWith(this.type)) {
+        if (!this.body.returnsTo().compatibleWith(this.returnType)) {
 			Logger.error("Return type incorrect");
 			return AtomicType.ErrorType;
 		}
@@ -72,7 +71,7 @@ public class ConstructorDeclaration extends ClassElement implements DeclarationW
 		for (ParameterDeclaration p : this.parameters){
 			parametersType.add(p.getType());
 		}
-        return new ConstructorType(this.type , parametersType);
+        return new ConstructorType(this.returnType, parametersType);
     }
     
     @Override

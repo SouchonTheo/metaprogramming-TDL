@@ -53,7 +53,7 @@ public class MethodDeclaration extends ClassElement implements DeclarationWithPa
 		return this.entete.parameters;
 	}
 
-/* (non-Javadoc)
+	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

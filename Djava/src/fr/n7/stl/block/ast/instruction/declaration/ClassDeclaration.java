@@ -67,6 +67,18 @@ public class ClassDeclaration implements Instruction, Declaration {
         this.classElements = _classElements;
     }
 
+    public Instance getHeritage() {
+        return this.heritage;
+    }
+
+    public List<Instance> getInterfaces() {
+        return this.interfaces;
+    }
+
+    public List<ClassElement> getClassElements() {
+        return this.classElements;
+    }
+
     public void setAbstract(){
         this.isAbstract = false;
     }
@@ -118,7 +130,7 @@ public class ClassDeclaration implements Instruction, Declaration {
 
         for(ClassElement c: this.classElements) {
             if(c instanceof ConstructorDeclaration) {
-                methods.add((ConstructorDeclaration) c);
+                constructors.add((ConstructorDeclaration) c);
             }
         }
         return constructors;
@@ -139,7 +151,7 @@ public class ClassDeclaration implements Instruction, Declaration {
             for (Instance i : this.interfaces){
 				retour = retour && i.collectAndBackwardResolve(tds);
 			}
-
+            // On vérifie que les constructeurs ont le nom de la classe et que les méthodes et attributs non
             for(ClassElement c : this.classElements) {
                 if (c instanceof ConstructorDeclaration) {
                     retour = retour && c.getName().equals(this.name);
@@ -192,7 +204,7 @@ public class ClassDeclaration implements Instruction, Declaration {
             List<ConstructorDeclaration> constructors = this.getConstructors(_scope);
             boolean constrDefault = true;
             for(ConstructorDeclaration c : constructors) {
-                if (c.getParameters().length() == 0) {
+                if (c.getParameters().size() == 0) {
                     constrDefault = false;
                 }
             }
