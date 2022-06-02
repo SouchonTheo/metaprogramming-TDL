@@ -1,11 +1,10 @@
 package fr.n7.stl.block.ast.instruction.declaration;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import fr.n7.stl.block.ast.Block;
 import fr.n7.stl.block.ast.classe.Signature;
+import fr.n7.stl.block.ast.classe.TypeParameter;
 import fr.n7.stl.block.ast.classe.AccessRight;
 import fr.n7.stl.block.ast.classe.Instance;
 import fr.n7.stl.block.ast.classe.ClassElement;
@@ -14,9 +13,7 @@ import fr.n7.stl.block.ast.classe.MethodDeclaration;
 import fr.n7.stl.block.ast.instruction.Instruction;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
-import fr.n7.stl.block.ast.scope.SymbolTable;
 import fr.n7.stl.block.ast.type.AtomicType;
-import fr.n7.stl.block.ast.type.FunctionType;
 import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.Register;
@@ -267,11 +264,10 @@ public class ClassDeclaration implements Instruction, Declaration {
         return result;
     }
 
-    
-
     @Override
     public int allocateMemory(Register _register, int _offset) {
         Logger.error("allocateMemory not implemented for ClassDeclaration");
+        return 0;
     }
 
     @Override
