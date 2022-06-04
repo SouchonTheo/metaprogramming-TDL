@@ -32,8 +32,8 @@ public class Instance implements Expression {
         return this.declaration;
     }
 
-    public void addInstance(Instance instance){
-        this.generiques.add(instance);
+    public void addInstances(List<Instance> instances){
+        this.generiques.addAll(instances);
     }
 
     public Declaration instanciate(HierarchicalScope<Declaration> _scope) {

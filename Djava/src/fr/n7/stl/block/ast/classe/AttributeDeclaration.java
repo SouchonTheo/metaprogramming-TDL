@@ -9,14 +9,16 @@ import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
+import fr.n7.stl.block.ast.type.PartialType;
 import fr.n7.stl.util.Logger;
+import fr.n7.stl.util.Pair;
 
 public class AttributeDeclaration extends ClassElement {
 
     /**
 	 * Name of the declared attribute.
 	 */
-	protected String name;
+	protected Pair<String,PartialType> ident;
 
 	/**
 	 * AST node for the type of the declared attribute.
@@ -40,19 +42,19 @@ public class AttributeDeclaration extends ClassElement {
 	 */
 	protected int offset;
 
-    public AttributeDeclaration(Type type, String name, Expression value) {
+    public AttributeDeclaration(Type type, Pair<String,PartialType> ident, Expression value) {
         this.type = type;
-        this.name = name;
+        this.ident = ident;
         this.value = value;
     }
 
-    public AttributeDeclaration(Type type, String name) {
-        this(type, name, null);
+    public AttributeDeclaration(Type type, Pair<String,PartialType> ident) {
+        this(type, ident, null);
     }
 
     @Override
     public String getName() {
-        return this.name;
+        return this.ident.getLeft();
     }
 
     @Override

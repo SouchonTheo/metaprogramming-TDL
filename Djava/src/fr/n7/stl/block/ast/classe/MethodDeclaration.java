@@ -30,7 +30,9 @@ public class MethodDeclaration extends ClassElement implements DeclarationWithPa
 	 */
 	protected HierarchicalScope<Declaration> tds;
 	
-
+	public MethodDeclaration(Signature entete) {
+		this.entete = entete;
+	}
 
 	public MethodDeclaration(Signature entete, Block body) {
 		this.entete = entete;
@@ -65,7 +67,7 @@ public class MethodDeclaration extends ClassElement implements DeclarationWithPa
 	* @see fr.n7.stl.block.ast.Declaration#getName()
 	*/
 	public String getName() {
-		return this.entete.name;
+		return this.entete.getName();
 	}
 
 	
@@ -110,7 +112,11 @@ public class MethodDeclaration extends ClassElement implements DeclarationWithPa
 			for (ParameterDeclaration p : this.getParameters()) {
 				this.tds.register(p);
 			}
-			return this.body.collectAndBackwardResolve(this.tds);
+			if(this.body !=null) {
+				return this.body.collectAndBackwardResolve(this.tds);
+			}
+			return true;
+			
 		} else {
 			Logger.error("Error : Multiple declarations.");
 			return false;

@@ -202,14 +202,14 @@ Elements ::= Main:principal
 Interface ::= UL_Interface UL_Identificateur:nom Generics:generiques MultipleInherits:heritages
 		UL_Accolade_Ouvrante InterfaceElements:interfaceElements UL_Accolade_Fermante
 		{:
-			RESULT = new InterfaceDeclaration(nom,(List<TypeParameter>)generiques,heritages,interfaceElements);
+			RESULT = new InterfaceDeclaration(nom,(List<TypeParameter>)generiques,(List<Instance>)heritages,(List<InterfaceElement>)interfaceElements);
 		:}
 		;
 		
 Class ::= UL_Classe UL_Identificateur:nom Generics:generiques SingleInherits:heritage Implements:interfaces
 		UL_Accolade_Ouvrante ClassElements:classeElements UL_Accolade_Fermante
 		{:
-			RESULT = new ClassDeclaration(nom,generiques, heritage, interfaces, classeElements);
+			RESULT = new ClassDeclaration(nom,(List<TypeParameter>)generiques, (Instance)heritage, (List<Instance>)interfaces, (List<ClassElement>)classeElements);
 		:}
 		;
 		
@@ -240,7 +240,7 @@ TypeParameter ::= UL_Identificateur:etiquette
 		:}
 		| UL_Identificateur:etiquette UL_Herite Constraints:contraintes
 		{:
-			RESULT = new TypeParameter(etiquette,contraintes);
+			RESULT = new TypeParameter(etiquette,(LinkedList<Instance>)contraintes);
 		:}
 		;
 		
@@ -252,7 +252,7 @@ Constraints ::= Instance:instance
 		:}
 		| Instance:instance UL_Esperluette Constraints:contraintes
 		{:
-			contraintes.add((Instance)instance);
+			((LinkedList<Instance>)contraintes).add((Instance)instance);
 			RESULT = contraintes;
 		:}
 		;
@@ -260,12 +260,12 @@ Constraints ::= Instance:instance
 TypeParameters ::= TypeParameter:typeParameter
 		{:
 			List<TypeParameter> _typeParameters = new LinkedList<TypeParameter>();
-			_contraintes.add((TypeParameter)typeParameter);
+			_typeParameters.add((TypeParameter)typeParameter);
 			RESULT = _typeParameters;
 		:}
 		| TypeParameter:typeParameter UL_Virgule TypeParameters:typeParameters
 		{:
-			typeParameters.add(typeParameter);
+			((List<TypeParameter>)typeParameters).add((TypeParameter)typeParameter);
 			RESULT = typeParameters;
 		:}
 		;
@@ -306,14 +306,14 @@ Implements ::= /* Lambda */
 		
 Instances ::= Instance:instance UL_Virgule Instances:instances
 		{:
-			instances.add(instance);
-			Result = instances;
+			((List<Instance>)instances).add((Instance)instance);
+			RESULT = instances;
 		:}
 		|
 		Instance:instance
 		{:
 			List<Instance> _instances = new LinkedList<Instance>();
-			_instances.add(instance);
+			((List<Instance>)_instances).add((Instance)instance);
 			RESULT = _instances;
 		:}
 		;
@@ -324,7 +324,7 @@ Instance ::= UL_Identificateur:etiquette
 		:}
 		| Instance:instance UL_Inferieur Instances:instances UL_Superieur
 		{:
-			instance.addInstances(instances);
+			((Instance)instance).addInstances((List<Instance>)instances);
 			RESULT = instance;
 		:}
 		;
@@ -335,8 +335,8 @@ ClassElements ::= /* Lambda */
 		:}
 		| AccessRight:access ClassElement:classElement ClassElements:classElements
 		{:
-			classElement.setAccess(access);
-			classElements.add(classElement);
+			((ClassElement)classElement).setAccess((AccessRight)access);
+			((List<ClassElement>)classElements).add((ClassElement)classElement);
 		:}
 		;
 		
@@ -344,9 +344,9 @@ InterfaceElements ::= /* Lambda */
 		{:
 			RESULT = new LinkedList<InterfaceElement>();
 		:}
-		| InterfaceElement:InterfaceElement InterfaceElements:interfaceElements
+		| InterfaceElement:interfaceElement InterfaceElements:interfaceElements
 		{:
-			interfaceElements.add(InterfaceElement);
+			((List<InterfaceElement>)interfaceElements).add((InterfaceElement)interfaceElement);
 		:}
 		;
 		
@@ -368,70 +368,69 @@ AccessRight ::=
 ClassElement ::=
 		Attribute:attribute
 		{:
-			RESULT = new ClassElement(attribute);
+			RESULT =(ClassElement) attribute;
 		:}
 		|
 		Method:method
 		{:
-			RESULT = new ClassElement(method);
+			RESULT = (ClassElement) method;
 		:}
 		|
 		Constructor:constructor
 		{:
-			RESULT = new ClassElement(constructor);
+			RESULT = (ClassElement) constructor;
 		:}
 		;
 		
 InterfaceElement ::=
-	/*On appelle un constructeur pour ne pas avoir à se soucier de l'héritage des classes.*/
 		Signature:entete UL_Point_Virgule
 		{:
-			RESULT = new InterfaceElement(entete);
+			RESULT = entete;
 		:}
 		;
 
 Attribute ::=
 		Type:type Identifiant:identifiant UL_Point_Virgule
 		{:
-			RESULT = new Attribute(type,identifiant);
+			RESULT = new AttributeDeclaration(type,(Pair<String,PartialType>)identifiant);
 		:}
 		|
 		UL_De_Classe Type:type Identifiant:identifiant UL_Egal Expression:valeur UL_Point_Virgule
 		{:
-			RESULT = new Attribute(type, identifiant, valeur);
+			RESULT = new AttributeDeclaration(type, (Pair<String,PartialType>)identifiant, valeur);
 		:}
 		|
 		UL_De_Classe UL_Definitif Type:type Identifiant:identifiant UL_Egal Expression:valeur UL_Point_Virgule
 		{:
-			Attribute attribute = new Attribute(type, identifiant, valeur);
+			AttributeDeclaration attribute = new AttributeDeclaration(type, (Pair<String,PartialType>)identifiant, valeur);
 			attribute.setStatic();
-			RESULT = attibute;
+			RESULT = attribute;
 		:}
 		;
 		
 Method ::=
 		Signature:entete Block:corps
 		{:
-			RESULT = new Method(entete,corps);
+			RESULT = new MethodDeclaration((Signature)entete,(Block)corps);
 		:}
 		| 
 		UL_Definitif Signature:entete Block:corps
 		{:
-			Method method = new Method(entete,corps);
+			MethodDeclaration method = new MethodDeclaration((Signature)entete,(Block)corps);
 			method.setFinal();
 			RESULT = method;
 		:}
 		| 
 		UL_De_Classe Signature:entete Block:corps
 		{:
-			Method method = new Method(entete,corps);
+			MethodDeclaration method = new MethodDeclaration((Signature)entete,(Block)corps);
 			method.setStatic();
 			RESULT = method;
 		:}
 		| 
 		UL_De_Classe UL_Definitif Signature:entete Block:corps
 		{:
-			Method method = new Method(entete,corps);
+			MethodDeclaration method = new MethodDeclaration((Signature)entete,(Block)corps);
 			method.setStatic();
 			method.setFinal();
 			RESULT = method;
@@ -439,7 +438,7 @@ Method ::=
 		| 
 		UL_Abstrait Signature:entete UL_Point_Virgule
 		{:
-			Method method = new Method(entete);
+			MethodDeclaration method = new MethodDeclaration((Signature)entete);
 			/*En soit pas nécessaire, car la seule fois où ce constructeur est appelé, mais plus clair*/
 			method.setAbstract();
 			RESULT = method;

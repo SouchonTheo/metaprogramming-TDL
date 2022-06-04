@@ -35,6 +35,11 @@ public class ClassDeclaration implements Instruction, Declaration {
     protected boolean isAbstract = false;
 
     /**
+     * Attribute that determçines whether the class is final or not. false by default
+     */
+    protected boolean isFinal = false;
+
+    /**
     * Generic parameters of the class
     */
     protected List<TypeParameter> generiques;
@@ -77,11 +82,19 @@ public class ClassDeclaration implements Instruction, Declaration {
     }
 
     public void setAbstract(){
-        this.isAbstract = false;
+        this.isAbstract = true;
     }
 
     public boolean isAbstract() {
         return this.isAbstract;
+    }
+
+    public void setFinal(){
+        this.isFinal = true;
+    }
+
+    public boolean isFinal() {
+        return this.isFinal;
     }
 
     public String toString() {

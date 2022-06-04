@@ -10,16 +10,18 @@ import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
 import fr.n7.stl.block.ast.type.AtomicType;
 import fr.n7.stl.block.ast.type.Type;
+import fr.n7.stl.block.ast.type.PartialType;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
 import fr.n7.stl.util.Logger;
+import fr.n7.stl.util.Pair;
 
 public class Signature extends InterfaceElement implements DeclarationWithParameters {
     /**
-	 * Name of the function
+	 * Identifier of the function
 	 */
-	protected String name;
+	protected Pair<String,PartialType> ident;
 
 	/**
 	 * AST node for the returned type of the function
@@ -31,18 +33,18 @@ public class Signature extends InterfaceElement implements DeclarationWithParame
 	 */
 	protected List<ParameterDeclaration> parameters;
 
-    public Signature (Type type, String name, List<ParameterDeclaration> parameters) {
+    public Signature (Type type, Pair<String,PartialType> ident, List<ParameterDeclaration> parameters) {
         this.type = type;
-        this.name = name;
+        this.ident = ident;
         this.parameters = parameters;
     }
 
-    public Signature (Type type, String name) {
-        this(type, name, new ArrayList<ParameterDeclaration>());
+    public Signature (Type type, Pair<String,PartialType> ident) {
+        this(type, ident, new ArrayList<ParameterDeclaration>());
     }
 
     public String toString() {
-		String _result = this.type + " " + this.name + "( ";
+		String _result = this.type + " " + this.ident.getLeft() + "( ";
 		Iterator<ParameterDeclaration> _iter = this.parameters.iterator();
 		if (_iter.hasNext()) {
 			_result += _iter.next();
@@ -55,7 +57,7 @@ public class Signature extends InterfaceElement implements DeclarationWithParame
 
     @Override
     public String getName() {
-        return this.name;
+        return this.ident.getLeft();
     }
 
     public Signature getSignature(){
