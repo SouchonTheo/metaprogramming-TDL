@@ -1,0 +1,9 @@
+// Test faux
+
+public class Main {
+	public static void main(String args[]) {
+		int tab[] = new int[1];
+		tab[0] = 1;
+		tab[1] = 2;
+	}
+}

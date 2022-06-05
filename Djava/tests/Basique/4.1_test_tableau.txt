@@ -1,0 +1,10 @@
+
+// Test juste
+
+public class Main {
+	public static void main(String args[]) {
+		int tab[] = new int[2];
+		tab[0] = 1;
+		tab[1] = 2;
+	}
+}
