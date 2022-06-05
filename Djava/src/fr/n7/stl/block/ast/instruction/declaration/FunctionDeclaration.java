@@ -120,7 +120,7 @@ public class FunctionDeclaration implements Instruction, DeclarationWithParamete
 	@Override
 	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
 		if (_scope.accepts(this)) {
-			_scope.register(this, this.parameters);
+			_scope.register(this);
 			this.tds = new SymbolTable(_scope);
 			for (ParameterDeclaration p : this.parameters){
 				this.tds.register(p);
