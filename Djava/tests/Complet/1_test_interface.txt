@@ -1,0 +1,49 @@
+interface I {
+	void m();
+}
+
+class CI1 implements I {
+	public void m() {
+		print 1;
+	}
+}
+
+class CI2 implements I {
+	public void m() {
+		print 2;
+	}
+}
+
+class CI3 implements I {
+	public I i1;
+	public I i2;
+	
+	public void m() {
+		this.i1.m();
+		this.i2.m();
+	}
+	
+	public CI3( I _i1, I _i2) {
+		this.i1 = _i1;
+		this.i2 = _i2;
+	}
+}
+
+public class Main {
+	public static void main(String args[]) {	
+		I i = new CI1();
+		i.m();
+		i = new CI2();
+		i.m();
+		
+		I tab[] = new I [2];
+		tab[0] = new A1();
+		tab[1] = new A2();
+		tab[0].m();
+		tab[1].m();
+		
+		i = new CI3( new CI1(), i);
+		i.m();
+	}
+}
+
