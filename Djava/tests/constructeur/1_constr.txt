@@ -1,14 +1,6 @@
 class A {
-	private int cons;
-
 	public A() {
-		this.cons = 0;
 	}
-
-	public int getCons() {
-		return cons;
-	}
-
 }
 
 public class Main {

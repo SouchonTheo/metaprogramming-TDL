@@ -153,26 +153,48 @@ public class ClassDeclaration implements Instruction, Declaration {
 	 */
 	@Override
 	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
+        if (this.heritage != null && this.heritage.getDeclaration().isFinal()){
+            Logger.error("Heritage d'une classe finale");
+            return false;
+        }
 		if (_scope.accepts(this)) {
 			_scope.register(this);
 			boolean retour = true;
             this.tds = new SymbolTable(_scope);
             if (this.generiques != null) {
                 for (TypeParameter g : this.generiques){
-                    
                     retour = retour && g.collectAndBackwardResolve(tds);
                 }
             }
             if (this.interfaces != null) {
                 for (Instance i : this.interfaces){
-                    
                     retour = retour && i.collectAndBackwardResolve(tds);
                 }
             }
+
             
-            // On vérifie que les constructeurs ont le nom de la classe et que les méthodes et attributs non
             for(ClassElement c : this.classElements) {
-                
+                if(this.heritage != null) {
+                    for(ClassElement h : this.heritage.getDeclaration().getClassElements()) {
+                        if (c.getName().equals(h.getName()) && h.isFinal() && c instanceof MethodDeclaration && h instanceof MethodDeclaration) {
+                            List<ParameterDeclaration> cTab = ((MethodDeclaration) c).getParameters();
+                            List<ParameterDeclaration> hTab = ((MethodDeclaration) h).getParameters();
+                            Boolean condHeritage = true;
+                            if (cTab.size() == hTab.size()) {
+                                for(int i = 0; i < cTab.size(); i++) {
+                                    if (cTab.get(i).getType().equals(hTab.get(i).getType())){
+                                        condHeritage = false;
+                                    }
+                                }
+                                if (!condHeritage){
+                                    Logger.error("Final method redifine");
+                                }
+                                retour = retour && condHeritage;
+                            }
+                        }
+                    }
+                }
+		// On vérifie que les constructeurs ont le nom de la classe et que les méthodes et attributs non
                 if (c instanceof ConstructorDeclaration) {
                     retour = retour && c.getName().equals(this.name);
                 } else {

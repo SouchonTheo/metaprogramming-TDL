@@ -15,6 +15,8 @@ import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.TAMFactory;
 import fr.n7.stl.util.Logger;
+import fr.n7.stl.block.ast.expression.accessible.IdentifierAccess;
+import fr.n7.stl.block.ast.instruction.declaration.*;
 
 /**
  * Abstract Syntax Tree node for a function call expression.
@@ -24,9 +26,9 @@ import fr.n7.stl.util.Logger;
 public class MethodCall implements Expression {
 
 	/**
-	 * Instance of the called method.
+	 * Name of the called method.
 	 */
-	protected Instance instance;
+	protected String name;
 	
 	/**
 	 * Object or class on which it is called
@@ -48,8 +50,8 @@ public class MethodCall implements Expression {
 	 * @param _name : Name of the called function.
 	 * @param _arguments : List of AST nodes that computes the values of the parameters for the function call.
 	 */
-	public MethodCall(Expression _objectOrClass, Instance _instance, List<Expression> _arguments) {
-		this.instance = _instance;
+	public MethodCall(Expression _objectOrClass, String _name, List<Expression> _arguments) {
+		this.name = _name;
 		this.method = null;
 		this.arguments = _arguments;
 		this.objectOrClass = _objectOrClass;
@@ -60,7 +62,7 @@ public class MethodCall implements Expression {
 	 */
 	@Override
 	public String toString() {
-		String _result = ((this.method == null)?this.instance.getName():this.method) + "( ";
+		String _result = ((this.method == null)?this.name:this.method) + "( ";
 		Iterator<Expression> _iter = this.arguments.iterator();
 		if (_iter.hasNext()) {
 			_result += _iter.next();
@@ -76,7 +78,11 @@ public class MethodCall implements Expression {
 	 */
 	@Override
 	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
-		if (_scope.knows(this.instance.getName(), this.arguments)) {
+		List<Type> listType = new ArrayList<Type>();
+		for (Expression arg : this.arguments) {
+			listType.add(arg.getType());
+		}
+		if (_scope.knows(this.name, listType)) {
 			boolean result = true;
 			for (Expression arg : this.arguments) {
 				result = result && arg.collectAndBackwardResolve(_scope);
@@ -98,50 +104,59 @@ public class MethodCall implements Expression {
 			result = result && arg.fullResolve(_scope);
 		}
 		// On vérifie la MethodDeclaration
-		Declaration decl = _scope.get(name, this.arguments);
+		List<Type> listType = new ArrayList<Type>();
+		for (Expression arg : this.arguments) {
+			listType.add(arg.getType());
+		}
+		Declaration decl = _scope.get(name, listType);
 		if ( decl instanceof MethodDeclaration) {
 			this.method = (MethodDeclaration) decl;
 			// On vérifie qu'on a le droit d'appeler cette méthode sur cet objet
-			if (expr instanceof IdentifierAccess) {
-				IdentifierAccess id = (IdentifierAccess) expr;
-				Type idType = id.getType();
-				if (idType instanceof Instance) {
-					Instance inst = (Instance) idType;
+			if(decl.getAcces().equals(AccessRight.PUBLIC)) {
+				if (objectOrClass instanceof IdentifierAccess) {
+					IdentifierAccess id = (IdentifierAccess) objectOrClass;
+					Type idType = id.getType();
+					if (idType instanceof Instance) {
+						Instance inst = (Instance) idType;
+						ClassDeclaration classDecl = inst.getDeclaration();
+						if (classDecl.getMethods(_scope).contains(this.method)) {
+							// On est ok
+						} else {
+							Logger.error("Method not known for this object");
+							return false;
+						}
+					} else {
+						Logger.error("Object is an AtomicType");
+						return false;
+					}
+				// Ou alors c'est une méthode statique de classe
+				} else if (objectOrClass instanceof Instance) {
+					Instance inst = (Instance) objectOrClass;
 					ClassDeclaration classDecl = inst.getDeclaration();
-					if (classDecl.getMethods().contains(this.method)) {
-						// On est ok
+					if (classDecl.getMethods(_scope).contains(this.method)) {
+						if (this.method.isStatic()) {
+							// On est ok
+						} else {
+							Logger.error("Method is not static. You can't call it like this.");
+							return false;
+						}
 					} else {
-						Logger.error("Method not known for this object");
+						Logger.error("Method not known for this class");
 						return false;
 					}
 				} else {
-					Logger.error("Object is an AtomicType");
+					Logger.error("Expression isn't a class or an object");
 					return false;
 				}
-			// Ou alors c'est une méthode statique de classe
-			} else if (expr instanceof Instance) {
-				Instance inst = (Instance) idType;
-				ClassDeclaration classDecl = inst.getDeclaration();
-				if (classDecl.getMethods().contains(this.method)) {
-					if (this.method.isStatic()) {
-						// On est ok
-					} else {
-						Logger.error("Method is not static. You can't call it like this.");
-						return false;
-					}
+				// Maintenant on peut vérifier le nombre de paramètres
+				if (this.method.getParameters().size() == this.arguments.size()) {
+					return result && (this.method != null);
 				} else {
-					Logger.error("Method not known for this class");
+					Logger.error("Incorrect number of parameters");
 					return false;
 				}
 			} else {
-				Logger.error("Expression isn't a class or an object");
-				return false;
-			}
-			// Maintenant on peut vérifier le nombre de paramètres
-			if (this.method.getParameters().size() == this.arguments.size()) {
-				return result && (this.method != null);
-			} else {
-				Logger.error("Incorrect number of parameters");
+				Logger.error("Access denied");
 				return false;
 			}
 		} else {
