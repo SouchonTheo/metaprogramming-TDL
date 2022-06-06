@@ -207,9 +207,10 @@ Interface ::= UL_Interface UL_Identificateur:nom Generics:generiques MultipleInh
 		;
 		
 Class ::= UL_Classe UL_Identificateur:nom Generics:generiques SingleInherits:heritage Implements:interfaces
-		UL_Accolade_Ouvrante ClassElements:classeElements UL_Accolade_Fermante
+		UL_Accolade_Ouvrante ClassElements:classElements UL_Accolade_Fermante
 		{:
-			RESULT = new ClassDeclaration(nom,(List<TypeParameter>)generiques, (Instance)heritage, (List<Instance>)interfaces, (List<ClassElement>)classeElements);
+			//System.out.println(classeElements);
+			RESULT = new ClassDeclaration(nom,(List<TypeParameter>)generiques, (Instance)heritage, (List<Instance>)interfaces, (List<ClassElement>)classElements);
 		:}
 		;
 		
@@ -337,6 +338,7 @@ ClassElements ::= /* Lambda */
 		{:
 			((ClassElement)classElement).setAccess((AccessRight)access);
 			((List<ClassElement>)classElements).add((ClassElement)classElement);
+			RESULT = classElements;
 		:}
 		;
 		
@@ -347,6 +349,7 @@ InterfaceElements ::= /* Lambda */
 		| InterfaceElement:interfaceElement InterfaceElements:interfaceElements
 		{:
 			((List<InterfaceElement>)interfaceElements).add((InterfaceElement)interfaceElement);
+			RESULT = interfaceElements;
 		:}
 		;
 		
