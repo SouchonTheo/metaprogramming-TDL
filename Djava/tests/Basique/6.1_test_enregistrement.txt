@@ -1,0 +1,22 @@
+class A {
+    private String nom;
+    private String prenom;
+    private String adresse;
+
+	public A(String nom, String prenom, String adresse) {
+		this.nom = nom;
+        this.prenom = prenom;
+        this.adresse = adresse;
+	}
+
+	public void pr() {
+		print("nom: " + this.nom + " prenom: " + this.prenom + " adresse: " + this.adresse);
+	}
+}
+
+public class Main {
+	public static void main(String args[]) {
+		A a = new A();
+		a.pr();
+	}
+}
