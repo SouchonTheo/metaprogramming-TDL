@@ -655,7 +655,7 @@ Parameters ::= Parameters:parameters UL_Virgule Type:type Identifiant:identifian
 				:}
 			;
 			
-Declaration ::= Atomique:type Identifiant:identifiant UL_Egal Expression:valeur UL_Point_Virgule
+Declaration ::= Type:type Identifiant:identifiant UL_Egal Expression:valeur UL_Point_Virgule
 				{:
 					Type _type = identifiant.getRight();
 					if (_type == null) {
@@ -664,20 +664,6 @@ Declaration ::= Atomique:type Identifiant:identifiant UL_Egal Expression:valeur 
 						_type = ((PartialType)_type).complete( type );
  					}
 					RESULT = new VariableDeclaration( identifiant.getLeft(), _type, valeur);
-				:}
-			| Type:type Identifiant:identifiant UL_Point_Virgule
-				{:
-					RESULT = new ObjectDeclaration(identifiant.getLeft(), type);
-				:}
-			| Type:type Identifiant:identifiant UL_Egal Expression:valeur UL_Point_Virgule
-				{:
-					Type _type = identifiant.getRight();
-					if (_type == null) {
-						_type = type;
-					} else {
-						_type = ((PartialType)_type).complete( type );
- 					}
-					RESULT = new ObjectDeclaration( identifiant.getLeft(), _type, valeur);
 				:}
 			/* début retrait miniJava
 			| Type:type Identifiant:identifiant UL_Parenthese_Ouvrante Parameters:parametres UL_Parenthese_Fermante Block:corps
@@ -723,7 +709,7 @@ Declaration ::= Atomique:type Identifiant:identifiant UL_Egal Expression:valeur 
  					}
 					RESULT = new ConstantDeclaration( identifiant.getLeft(), _type, valeur); 
 				:}
-			fin retrait miniJava
+			fin retrait miniJava*/
 			;
 
 Instruction ::= Declaration:declaration
@@ -778,9 +764,9 @@ Affectable ::= UL_Identificateur:nom
 				{:
 					RESULT = new VariableAssignment( nom );
 				:}
-			/* début ajout miniJava */
-			| UL_Moi
+			| UL_Moi UL_Point UL_Identificateur:nom
 				{:
+					RESULT = new AttributeAssignment( nom );
 				:}
 			| UL_Super
 				{:

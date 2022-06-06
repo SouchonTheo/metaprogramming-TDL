@@ -74,7 +74,6 @@ public class Block {
 	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
 		boolean result = true;
 		tds = new SymbolTable(_scope);
-		System.out.println(this.instructions);
 		for (Instruction _instruction : this.instructions) {
 			result = result && _instruction.collectAndBackwardResolve(tds);
 		}

@@ -65,7 +65,7 @@ public class ConstructorCall implements Expression {
 	 */
 	@Override
 	public String toString() {
-		String _result = ((this.constructor == null)?this.name:this.constructor) + "( ";
+		String _result = "new " + ((this.constructor == null)?this.typeToInstance:this.constructor) + "( ";
 		Iterator<Expression> _iter = this.arguments.iterator();
 		if (_iter.hasNext()) {
 			_result += _iter.next();
@@ -93,6 +93,7 @@ public class ConstructorCall implements Expression {
 			Declaration declaration = ((Instance)typeToInstance).instanciate(_scope);
 			if(declaration instanceof ClassDeclaration) {
 				this.classe = (ClassDeclaration)declaration;
+				this.name = this.classe.getName();
 				if(!this.classe.isAbstract()) {
 					List<ConstructorDeclaration> classConstructors = this.classe.getConstructors();
 					for (ConstructorDeclaration c : classConstructors){
@@ -111,20 +112,25 @@ public class ConstructorCall implements Expression {
 							return true;
 						} else {
 							Logger.error("temp = false");
+							return false;
 						}
 					}
 					Logger.error("No constructor corresponds to the one called");
+					return false;
 					
 				} else {
 					Logger.error("Can't call a constructor on an abstract class");
+					return false;
 				}
 			} else {
 				Logger.error("Constructor called with not the name of a class");
+				return false;
 			}
 		} else {
 			Logger.error("Atomic types don't have constructors");
+			return false;
 		}
-		return false;
+		
 	}
 	/*
 	@Override

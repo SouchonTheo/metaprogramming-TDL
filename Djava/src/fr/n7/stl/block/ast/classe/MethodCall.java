@@ -112,58 +112,68 @@ public class MethodCall implements Expression {
 		if ( decl instanceof MethodDeclaration) {
 			this.method = (MethodDeclaration) decl;
 			// On vérifie qu'on a le droit d'appeler cette méthode sur cet objet
-			if(decl.getAcces().equals(AccessRight.PUBLIC)) {
+			if(this.method.getAccess().equals(AccessRight.PUBLIC)) {
 				if (objectOrClass instanceof IdentifierAccess) {
 					IdentifierAccess id = (IdentifierAccess) objectOrClass;
-					Type idType = id.getType();
-					if (idType instanceof Instance) {
-						Instance inst = (Instance) idType;
-						ClassDeclaration classDecl = inst.getDeclaration();
-						if (classDecl.getMethods(_scope).contains(this.method)) {
-							// On est ok
+					if (_scope.knows(id.getName())){
+						Declaration idType = _scope.get(id.getName());
+						if (idType instanceof ClassDeclaration) {
+							ClassDeclaration classDecl = (ClassDeclaration)idType;
+							if (classDecl.getMethods(_scope).contains(this.method)) {
+								return true;
+							} else {
+								Logger.error("Method not known for this object");
+								return false;
+							}
 						} else {
-							Logger.error("Method not known for this object");
+							Logger.error("Object is an AtomicType");
 							return false;
 						}
+					
 					} else {
-						Logger.error("Object is an AtomicType");
-						return false;
-					}
+						Logger.error("Object is unknown");
+							return false;
+						}
+				
+				
+					
 				// Ou alors c'est une méthode statique de classe
-				} else if (objectOrClass instanceof Instance) {
-					Instance inst = (Instance) objectOrClass;
-					ClassDeclaration classDecl = inst.getDeclaration();
-					if (classDecl.getMethods(_scope).contains(this.method)) {
-						if (this.method.isStatic()) {
-							// On est ok
-						} else {
-							Logger.error("Method is not static. You can't call it like this.");
-							return false;
-						}
+			} else if (objectOrClass instanceof Instance) {
+				Instance inst = (Instance) objectOrClass;
+				ClassDeclaration classDecl = inst.getDeclaration();
+				if (classDecl.getMethods(_scope).contains(this.method)) {
+					if (this.method.isStatic()) {
+						// On est ok
 					} else {
-						Logger.error("Method not known for this class");
+						Logger.error("Method is not static. You can't call it like this.");
 						return false;
 					}
 				} else {
-					Logger.error("Expression isn't a class or an object");
-					return false;
-				}
-				// Maintenant on peut vérifier le nombre de paramètres
-				if (this.method.getParameters().size() == this.arguments.size()) {
-					return result && (this.method != null);
-				} else {
-					Logger.error("Incorrect number of parameters");
+					Logger.error("Method not known for this class");
 					return false;
 				}
 			} else {
-				Logger.error("Access denied");
+					Logger.error("Expression isn't a class or an object");
+					return false;
+			}
+			// Maintenant on peut vérifier le nombre de paramètres
+			if (this.method.getParameters().size() == this.arguments.size()) {
+				
+				return result;
+			} else {
+				Logger.error("Incorrect number of parameters");
 				return false;
 			}
 		} else {
+			Logger.error("Access denied");
+			return false;
+		}
+	} else {
 			Logger.error("Object not a method");
 			return false;
 		}
 	}
+
 
 	@Override
 	public Type getType() {

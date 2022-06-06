@@ -38,6 +38,9 @@ public class IdentifierAccess extends AbstractIdentifier implements AccessibleEx
 		super(_name);
 	}
 	
+	public String getName() {
+		return this.name;
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

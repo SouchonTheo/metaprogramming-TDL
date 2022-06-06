@@ -10,6 +10,7 @@ import fr.n7.stl.block.ast.classe.Instance;
 import fr.n7.stl.block.ast.classe.ClassElement;
 import fr.n7.stl.block.ast.classe.ConstructorDeclaration;
 import fr.n7.stl.block.ast.classe.MethodDeclaration;
+import fr.n7.stl.block.ast.classe.AttributeDeclaration;
 import fr.n7.stl.block.ast.instruction.Instruction;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
@@ -136,6 +137,28 @@ public class ClassDeclaration implements Instruction, Declaration {
         return methods;
     }
 
+    public List<AttributeDeclaration> getAttributes(HierarchicalScope<Declaration> _scope) {
+        List<AttributeDeclaration> attributes = new ArrayList<AttributeDeclaration>();
+        if(this.heritage != null) {
+            Declaration tempDeclaration = this.heritage.instanciate(_scope);
+            //Vérifier qu'il s'agit bien d'une classe
+            if (tempDeclaration instanceof ClassDeclaration) {
+                ClassDeclaration superClass = (ClassDeclaration) tempDeclaration;
+                //Récupérer les méthodes de la classe.
+                attributes = superClass.getAttributes(_scope);
+            } else {
+                Logger.error("Class "+ this.name + " extends something else than a class");
+                return new ArrayList<AttributeDeclaration>();
+            }
+        }
+        for(ClassElement c: this.classElements) {
+            if(c instanceof AttributeDeclaration) {
+                attributes.add((AttributeDeclaration)c);
+            }
+        }
+        return attributes;
+    }
+
     public List<ConstructorDeclaration> getConstructors() {
         List<ConstructorDeclaration> constructors = new ArrayList<ConstructorDeclaration>();
 
@@ -188,6 +211,7 @@ public class ClassDeclaration implements Instruction, Declaration {
                                 }
                                 if (!condHeritage){
                                     Logger.error("Final method redifine");
+                                    return false;
                                 }
                                 retour = retour && condHeritage;
                             }
@@ -196,9 +220,15 @@ public class ClassDeclaration implements Instruction, Declaration {
                 }
 		// On vérifie que les constructeurs ont le nom de la classe et que les méthodes et attributs non
                 if (c instanceof ConstructorDeclaration) {
-                    retour = retour && c.getName().equals(this.name);
+                    if (!c.getName().equals(this.name)){
+                        Logger.error("Nom de constructeur incorrect");
+                        return false;
+                    }
                 } else {
-                    retour = retour && !c.getName().equals(this.name);
+                    if(c.getName().equals(this.name)){
+                        Logger.error("Nom de methode/attribut incorrect");
+                        return false;
+                    }
                 }
                 retour = retour && c.collectAndBackwardResolve(tds);
             }
