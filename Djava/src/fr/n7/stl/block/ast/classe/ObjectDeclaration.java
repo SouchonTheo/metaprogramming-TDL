@@ -1,12 +1,16 @@
 package fr.n7.stl.block.ast.classe;
 
+import fr.n7.stl.block.ast.SemanticsUndefinedException;
+import fr.n7.stl.block.ast.expression.Expression;
 import fr.n7.stl.block.ast.instruction.Instruction;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
+import fr.n7.stl.block.ast.type.AtomicType;
 import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
+import fr.n7.stl.util.Logger;
 
 
 public class ObjectDeclaration implements Declaration, Instruction {
@@ -70,6 +74,8 @@ public class ObjectDeclaration implements Declaration, Instruction {
 			_scope.register(this);
             if(this.value != null) {
 			    return this.value.collectAndBackwardResolve(_scope);
+            } else {
+                return true;
             }
 		} else {
 			Logger.error("Error : Multiple declarations.");

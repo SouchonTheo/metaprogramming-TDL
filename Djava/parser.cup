@@ -655,7 +655,7 @@ Parameters ::= Parameters:parameters UL_Virgule Type:type Identifiant:identifian
 				:}
 			;
 			
-Declaration ::= Atomique:type UL_Identificateur:identifiant UL_Egal Expression:valeur UL_Point_Virgule
+Declaration ::= Atomique:type Identifiant:identifiant UL_Egal Expression:valeur UL_Point_Virgule
 				{:
 					Type _type = identifiant.getRight();
 					if (_type == null) {
