@@ -176,7 +176,6 @@ public class ClassDeclaration implements Instruction, Declaration {
                 // retour = retour && this.heritage.collectAndBackwardResolve(tds);
             }
             
-            // On vérifie que les constructeurs ont le nom de la classe et que les méthodes et attributs non
             for(ClassElement c : this.classElements) {
                 for(ClassElement h : this.heritage.getDeclaration().getClassElements()) {
                     if (c.getName().equals(h.getName()) && h.isFinal()) {
@@ -196,6 +195,7 @@ public class ClassDeclaration implements Instruction, Declaration {
                         }
                     }
                 }
+		// On vérifie que les constructeurs ont le nom de la classe et que les méthodes et attributs non
                 if (c instanceof ConstructorDeclaration) {
                     retour = retour && c.getName().equals(this.name);
                 } else {
