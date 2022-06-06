@@ -13,6 +13,7 @@ import fr.n7.stl.block.ast.classe.MethodDeclaration;
 import fr.n7.stl.block.ast.instruction.Instruction;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
+import fr.n7.stl.block.ast.scope.SymbolTable;
 import fr.n7.stl.block.ast.type.AtomicType;
 import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
@@ -155,14 +156,23 @@ public class ClassDeclaration implements Instruction, Declaration {
 		if (_scope.accepts(this)) {
 			_scope.register(this);
 			boolean retour = true;
-			for (TypeParameter g : this.generiques){
-				retour = retour && g.collectAndBackwardResolve(tds);
-			}
-            for (Instance i : this.interfaces){
-				retour = retour && i.collectAndBackwardResolve(tds);
-			}
+            this.tds = new SymbolTable(_scope);
+            if (this.generiques != null) {
+                for (TypeParameter g : this.generiques){
+                    
+                    retour = retour && g.collectAndBackwardResolve(tds);
+                }
+            }
+            if (this.interfaces != null) {
+                for (Instance i : this.interfaces){
+                    
+                    retour = retour && i.collectAndBackwardResolve(tds);
+                }
+            }
+            
             // On vérifie que les constructeurs ont le nom de la classe et que les méthodes et attributs non
             for(ClassElement c : this.classElements) {
+                
                 if (c instanceof ConstructorDeclaration) {
                     retour = retour && c.getName().equals(this.name);
                 } else {

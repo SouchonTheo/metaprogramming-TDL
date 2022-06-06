@@ -72,9 +72,13 @@ public class MethodCall implements Expression {
 	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
 		if (_scope.knows(this.name)) {
 			boolean result = true;
-			for (Expression arg : this.arguments) {
-				result = result && arg.collectAndBackwardResolve(_scope);
+			if (this.arguments != null){
+				
+				for (Expression arg : this.arguments) {
+					result = result && arg.collectAndBackwardResolve(_scope);
+				}
 			}
+			
 			return result;
 		}
 		Logger.error("Method not known");

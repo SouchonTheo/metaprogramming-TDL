@@ -108,10 +108,14 @@ public class MethodDeclaration extends ClassElement implements DeclarationWithPa
 	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
 		if (_scope.accepts(this)) {
 			_scope.register(this);
+			
 			this.tds = new SymbolTable(_scope);
-			for (ParameterDeclaration p : this.getParameters()) {
-				this.tds.register(p);
+			if (this.getParameters() != null) {
+				for (ParameterDeclaration p : this.getParameters()) {
+					this.tds.register(p);
+				}
 			}
+			
 			if(this.body !=null) {
 				return this.body.collectAndBackwardResolve(this.tds);
 			}
