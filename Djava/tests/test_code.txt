@@ -1,30 +1,17 @@
 class A {
-	
-	public void m() {
-		print 1;
-	}
-	
-}
+	public int v;
 
-class B extends A {
-
-	public void m() {
-		print 2;
+	public void setV(int _v) {
+		this.v = _v;
 	}
-	
+
+	public int getV() {
+		return this.v;
+	}
 }
 
 public class Main {
-
 	public static void main(String args[]) {
-		A a = new A();
-		a.m();
-		
-		B b = new B();
-		b.m();
-		
-		a = b;
-		a.m();
-		
+		print("Hello world!");
 	}
 }

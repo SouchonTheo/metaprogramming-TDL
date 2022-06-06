@@ -73,7 +73,11 @@ public class AttributeDeclaration extends ClassElement {
     @Override
     public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
         if (_scope.accepts(this)) {
-            _scope.register(this);
+            if (this.isFinal) {
+                _scope.register(new ConstantDeclaration(this.name, this.type, this.value));
+            } else {
+                _scope.register(this);
+            }
             return this.value.collectAndBackwardResolve(_scope);
         } else {
             Logger.error("This attribute already exists");
