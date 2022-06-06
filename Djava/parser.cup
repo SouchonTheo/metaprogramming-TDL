@@ -665,9 +665,9 @@ Declaration ::= Atomique:type Identifiant:identifiant UL_Egal Expression:valeur 
  					}
 					RESULT = new VariableDeclaration( identifiant.getLeft(), _type, valeur);
 				:}
-			| Type:type UL_Identificateur:name UL_Point_Virgule
+			| Type:type Identifiant:identifiant UL_Point_Virgule
 				{:
-					RESULT = new ObjectDeclaration(name, type);
+					RESULT = new ObjectDeclaration(identifiant.getLeft(), type);
 				:}
 			| Type:type Identifiant:identifiant UL_Egal Expression:valeur UL_Point_Virgule
 				{:
