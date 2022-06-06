@@ -110,6 +110,7 @@ public class MethodDeclaration extends ClassElement implements DeclarationWithPa
 			_scope.register(this);
 			
 			this.tds = new SymbolTable(_scope);
+
 			if (this.getParameters() != null) {
 				for (ParameterDeclaration p : this.getParameters()) {
 					this.tds.register(p);
