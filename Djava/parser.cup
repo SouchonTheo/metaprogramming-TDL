@@ -939,17 +939,7 @@ Expression ::= /* TODO (modifications à faire pour 2022) : Affectable:affectabl
 					List<Expression> _parametres = new LinkedList<Expression>();
 					RESULT = new MethodCall( nom, _parametres );
 				:}
-			|
-				UL_Moi Expression:fonction	UL_Parenthese_Ouvrante Expressions:parametres UL_Parenthese_Fermante                     
-             	{: 
-					RESULT = new MethodCall( nom, parametres ); 
-				:}
-			|
-				UL_Moi Expression:fonction	UL_Parenthese_Ouvrante UL_Parenthese_Fermante                     
-             	{:
-					List<Expression> _parametres = new LinkedList<Expression>();
-					RESULT = new MethodCall( nom, _parametres );
-				:}
+			
 				/* fin adaptation miniJava */
 			| UL_Nombre_Entier:entier	                     
              	{: 

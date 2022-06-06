@@ -2631,9 +2631,7 @@ class CUP$Parser$actions {
 		List<Expression> parametres = (List<Expression>)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		//@@CUPDBG111
  
-					/* début retrait miniJava
-					RESULT = new FunctionCall( nom, parametres ); 
-					fin retrait miniJava  */
+					RESULT = new MethodCall( nom, parametres ); 
 				
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Expression",14, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -2648,10 +2646,8 @@ class CUP$Parser$actions {
 		Expression fonction = (Expression)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		//@@CUPDBG112
 
-					/* retrait miniJava
 					List<Expression> _parametres = new LinkedList<Expression>();
-					RESULT = new FunctionCall( nom, _parametres );
-					fin retrait miniJava  */ 
+					RESULT = new MethodCall( nom, _parametres );
 				
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Expression",14, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
