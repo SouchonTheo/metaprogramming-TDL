@@ -655,7 +655,7 @@ Parameters ::= Parameters:parameters UL_Virgule Type:type Identifiant:identifian
 				:}
 			;
 			
-Declaration ::= Type:type Identifiant:identifiant UL_Egal Expression:valeur UL_Point_Virgule
+Declaration ::= AtomicType:type Identifiant:identifiant UL_Egal Expression:valeur UL_Point_Virgule
 				{:
 					Type _type = identifiant.getRight();
 					if (_type == null) {
@@ -664,6 +664,14 @@ Declaration ::= Type:type Identifiant:identifiant UL_Egal Expression:valeur UL_P
 						_type = ((PartialType)_type).complete( type );
  					}
 					RESULT = new VariableDeclaration( identifiant.getLeft(), _type, valeur);
+				:}
+			| Type:type UL_Identifiant:name UL_Point_Virgule
+				{:
+					RESULT = new ObjectDeclaration(name, type);
+				:}
+			| Type:type UL_Identifiant:name UL_Egal Expression:valeur UL_Point_Virgule
+				{:
+					RESULT = new ObjectDeclaration(name, type, valeur);
 				:}
 			/* début retrait miniJava
 			| Type:type Identifiant:identifiant UL_Parenthese_Ouvrante Parameters:parametres UL_Parenthese_Fermante Block:corps
