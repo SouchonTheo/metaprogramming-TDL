@@ -15,6 +15,8 @@ import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.TAMFactory;
 import fr.n7.stl.util.Logger;
+import fr.n7.stl.block.ast.expression.accessible.IdentifierAccess;
+import fr.n7.stl.block.ast.instruction.declaration.*;
 
 /**
  * Abstract Syntax Tree node for a function call expression.
@@ -76,7 +78,11 @@ public class MethodCall implements Expression {
 	 */
 	@Override
 	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
-		if (_scope.knows(this.name, this.arguments)) {
+		List<Type> listType = new ArrayList<Type>();
+		for (Expression arg : this.arguments) {
+			listType.add(arg.getType());
+		}
+		if (_scope.knows(this.name, listType)) {
 			boolean result = true;
 			for (Expression arg : this.arguments) {
 				result = result && arg.collectAndBackwardResolve(_scope);
@@ -98,17 +104,21 @@ public class MethodCall implements Expression {
 			result = result && arg.fullResolve(_scope);
 		}
 		// On vérifie la MethodDeclaration
-		Declaration decl = _scope.get(name, this.arguments);
+		List<Type> listType = new ArrayList<Type>();
+		for (Expression arg : this.arguments) {
+			listType.add(arg.getType());
+		}
+		Declaration decl = _scope.get(name, listType);
 		if ( decl instanceof MethodDeclaration) {
 			this.method = (MethodDeclaration) decl;
 			// On vérifie qu'on a le droit d'appeler cette méthode sur cet objet
 			if (objectOrClass instanceof IdentifierAccess) {
-				IdentifierAccess id = (IdentifierAccess) expr;
+				IdentifierAccess id = (IdentifierAccess) objectOrClass;
 				Type idType = id.getType();
 				if (idType instanceof Instance) {
 					Instance inst = (Instance) idType;
 					ClassDeclaration classDecl = inst.getDeclaration();
-					if (classDecl.getMethods().contains(this.method)) {
+					if (classDecl.getMethods(_scope).contains(this.method)) {
 						// On est ok
 					} else {
 						Logger.error("Method not known for this object");
@@ -120,9 +130,9 @@ public class MethodCall implements Expression {
 				}
 			// Ou alors c'est une méthode statique de classe
 			} else if (objectOrClass instanceof Instance) {
-				Instance inst = (Instance) idType;
+				Instance inst = (Instance) objectOrClass;
 				ClassDeclaration classDecl = inst.getDeclaration();
-				if (classDecl.getMethods().contains(this.method)) {
+				if (classDecl.getMethods(_scope).contains(this.method)) {
 					if (this.method.isStatic()) {
 						// On est ok
 					} else {

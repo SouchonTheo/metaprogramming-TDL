@@ -103,11 +103,14 @@ public class ConstructorCall implements Expression {
 								temp = temp && check.get(i).getType().compatibleWith(this.arguments.get(i).getType());
 							}
 						} else {
+							Logger.error("size not matching");
 							temp = false;
 						}
 						if(temp){
 							this.constructor = c;
 							return true;
+						} else {
+							Logger.error("temp = false");
 						}
 					}
 					Logger.error("No constructor corresponds to the one called");

@@ -79,7 +79,11 @@ public class AttributeDeclaration extends ClassElement {
             } else {
                 _scope.register(this);
             }
-            return this.value.collectAndBackwardResolve(_scope);
+            if (this.value != null) {
+                return this.value.collectAndBackwardResolve(_scope);
+            } else {
+                return true;
+            }
         } else {
             Logger.error("This attribute already exists");
             return false;
