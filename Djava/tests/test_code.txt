@@ -2,7 +2,7 @@ class A {
 	private int cons;
 
 	public A() {
-		cons = 12;
+		this.cons = 0;
 	}
 
 	public int getCons() {

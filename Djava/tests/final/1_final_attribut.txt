@@ -1,0 +1,21 @@
+class A {
+	public final int v = 5;
+	
+	public A() {
+	}
+
+	public void setV(int _v) {
+		this.v = _v;
+	}
+
+    public void print() {
+        print(v);
+    }
+}
+
+public class Main {
+	public static void main(String args[]) {
+		A a = new A();
+        a.print();
+	}
+}
