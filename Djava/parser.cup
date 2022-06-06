@@ -669,9 +669,15 @@ Declaration ::= Atomique:type Identifiant:identifiant UL_Egal Expression:valeur 
 				{:
 					RESULT = new ObjectDeclaration(name, type);
 				:}
-			| Type:type UL_Identificateur:name UL_Egal Expression:valeur UL_Point_Virgule
+			| Type:type Identifiant:identifiant UL_Egal Expression:valeur UL_Point_Virgule
 				{:
-					RESULT = new ObjectDeclaration(name, type, valeur);
+					Type _type = identifiant.getRight();
+					if (_type == null) {
+						_type = type;
+					} else {
+						_type = ((PartialType)_type).complete( type );
+ 					}
+					RESULT = new ObjectDeclaration( identifiant.getLeft(), _type, valeur);
 				:}
 			/* début retrait miniJava
 			| Type:type Identifiant:identifiant UL_Parenthese_Ouvrante Parameters:parametres UL_Parenthese_Fermante Block:corps
