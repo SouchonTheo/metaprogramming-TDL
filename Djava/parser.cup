@@ -896,7 +896,7 @@ Expression ::= /* TODO (modifications à faire pour 2022) : Affectable:affectabl
 				:}
 			| Expression:expression UL_Point UL_Identificateur:etiquette
 				{:
-					RESULT = new FieldAccess( expression, etiquette );
+					RESULT = etiquette;
 				:}
 			| Expression:condition UL_Point_Interrogation Expression:alors UL_Deux_Points Expression:sinon
 				{:
