@@ -3,6 +3,7 @@ package fr.n7.stl.block.ast.classe;
 import fr.n7.stl.block.ast.expression.Expression;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
+import fr.n7.stl.block.ast.instruction.declaration.VariableDeclaration;
 import fr.n7.stl.block.ast.type.AtomicType;
 import fr.n7.stl.block.ast.type.NamedType;
 import fr.n7.stl.block.ast.type.Type;
@@ -74,7 +75,7 @@ public class AttributeDeclaration extends ClassElement {
     public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
         if (_scope.accepts(this)) {
             if (this.isFinal) {
-                _scope.register(new ConstantDeclaration(this.name, this.type, this.value));
+                _scope.register(new VariableDeclaration(this.ident.getLeft(), this.type, this.value));
             } else {
                 _scope.register(this);
             }
