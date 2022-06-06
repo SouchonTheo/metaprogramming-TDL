@@ -7,21 +7,34 @@ import fr.n7.stl.tam.ast.TAMFactory;
 
 public class AttributeAccess extends AbstractAccess {
 	
-	protected AttributeDeclaration declaration;
-	
-	/**
-	 * Creates a variable use expression Abstract Syntax Tree node.
-	 * @param _name Name of the used variable.
-	 */
-	public AttributeAccess(AttributeDeclaration _declaration) {
-		this.declaration = _declaration;
+	protected String name;
+	protected Expression objetBrut;
+
+	public AttributeAccess(Expression objet, String name) {
+		this.objetBrut = objet;
+		this.name = name;
 	}
-	
-	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.expression.AbstractUse#getDeclaration()
-	 */
-	public Declaration getDeclaration() {
-		return this.declaration;
+
+	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
+		return this.objetBrut.collectAndBackwardResolve(_scope);
+	}
+	public boolean fullResolve(HierarchicalScope<Declaration> _scope) {
+		if (expr instanceof IdentifierAccess) {
+			IdentifierAccess id = (IdentifierAccess) expr;
+			Type idType = id.getType();
+			if (idType instanceof Instance) {
+				Instance inst = (Instance) idType;
+				ClassDeclaration classDecl = inst.getDeclaration();
+				if (classDecl.getA().contains(this.method)) {
+					// On est ok
+				} else {
+					Logger.error("Method not known for this object");
+					return false;
+				}
+			} else {
+				Logger.error("Object is an AtomicType");
+				return false;
+			}
 	}
 
 	/* (non-Javadoc)
@@ -29,10 +42,10 @@ public class AttributeAccess extends AbstractAccess {
 	 */
 	public Fragment getCode(TAMFactory _factory) {
 		Fragment _result = _factory.createFragment();
-		_result.add(_factory.createLoad(
+		/*_result.add(_factory.createLoad(
 				this.declaration.getRegister(), 
 				this.declaration.getOffset(),
-				this.declaration.getType().length()));
+				this.declaration.getType().length()));*/
 		_result.addComment(this.toString());
 		return _result;
 	}

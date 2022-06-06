@@ -126,7 +126,7 @@ public class MethodCall implements Expression {
 					if (this.method.isStatic()) {
 						// On est ok
 					} else {
-						Logger.error("Method is not static. You can't call it like this.);
+						Logger.error("Method is not static. You can't call it like this.");
 						return false;
 					}
 				} else {
