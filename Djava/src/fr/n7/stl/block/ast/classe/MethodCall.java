@@ -24,9 +24,14 @@ import fr.n7.stl.util.Logger;
 public class MethodCall implements Expression {
 
 	/**
-	 * Name of the called function.
+	 * Instance of the called method.
 	 */
-	protected String name;
+	protected Instance instance;
+	
+	/**
+	 * Object or class on which it is called
+	 */
+	protected Expression objectOrClass;
 	
 	/**
 	 * Declaration of the called function after name resolution.
@@ -43,10 +48,11 @@ public class MethodCall implements Expression {
 	 * @param _name : Name of the called function.
 	 * @param _arguments : List of AST nodes that computes the values of the parameters for the function call.
 	 */
-	public MethodCall(String _name, List<Expression> _arguments) {
-		this.name = _name;
+	public MethodCall(Expression _objectOrClass, Instance _instance, List<Expression> _arguments) {
+		this.instance = _instance;
 		this.method = null;
 		this.arguments = _arguments;
+		this.objectOrClass = _objectOrClass;
 	}
 
 	/* (non-Javadoc)
@@ -54,7 +60,7 @@ public class MethodCall implements Expression {
 	 */
 	@Override
 	public String toString() {
-		String _result = ((this.method == null)?this.name:this.method) + "( ";
+		String _result = ((this.method == null)?this.instance.getName():this.method) + "( ";
 		Iterator<Expression> _iter = this.arguments.iterator();
 		if (_iter.hasNext()) {
 			_result += _iter.next();
@@ -70,15 +76,11 @@ public class MethodCall implements Expression {
 	 */
 	@Override
 	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
-		if (_scope.knows(this.name)) {
+		if (_scope.knows(this.instance.getName(), this.arguments)) {
 			boolean result = true;
-			if (this.arguments != null){
-				
-				for (Expression arg : this.arguments) {
-					result = result && arg.collectAndBackwardResolve(_scope);
-				}
+			for (Expression arg : this.arguments) {
+				result = result && arg.collectAndBackwardResolve(_scope);
 			}
-			
 			return result;
 		}
 		Logger.error("Method not known");
@@ -91,12 +93,51 @@ public class MethodCall implements Expression {
 	@Override
 	public boolean fullResolve(HierarchicalScope<Declaration> _scope) {
 		boolean result = true;
+		// On appelle d'abord sur les arguments
 		for (Expression arg : this.arguments) {
 			result = result && arg.fullResolve(_scope);
 		}
-		Declaration decl = _scope.get(name);
+		// On vérifie la MethodDeclaration
+		Declaration decl = _scope.get(name, this.arguments);
 		if ( decl instanceof MethodDeclaration) {
 			this.method = (MethodDeclaration) decl;
+			// On vérifie qu'on a le droit d'appeler cette méthode sur cet objet
+			if (expr instanceof IdentifierAccess) {
+				IdentifierAccess id = (IdentifierAccess) expr;
+				Type idType = id.getType();
+				if (idType instanceof Instance) {
+					Instance inst = (Instance) idType;
+					ClassDeclaration classDecl = inst.getDeclaration();
+					if (classDecl.getMethods().contains(this.method)) {
+						// On est ok
+					} else {
+						Logger.error("Method not known for this object");
+						return false;
+					}
+				} else {
+					Logger.error("Object is an AtomicType");
+					return false;
+				}
+			// Ou alors c'est une méthode statique de classe
+			} else if (expr instanceof Instance) {
+				Instance inst = (Instance) idType;
+				ClassDeclaration classDecl = inst.getDeclaration();
+				if (classDecl.getMethods().contains(this.method)) {
+					if (this.method.isStatic()) {
+						// On est ok
+					} else {
+						Logger.error("Method is not static. You can't call it like this.);
+						return false;
+					}
+				} else {
+					Logger.error("Method not known for this class");
+					return false;
+				}
+			} else {
+				Logger.error("Expression isn't a class or an object");
+				return false;
+			}
+			// Maintenant on peut vérifier le nombre de paramètres
 			if (this.method.getParameters().size() == this.arguments.size()) {
 				return result && (this.method != null);
 			} else {
