@@ -24,9 +24,9 @@ import fr.n7.stl.util.Logger;
 public class MethodCall implements Expression {
 
 	/**
-	 * Instance of the called method.
+	 * Name of the called method.
 	 */
-	protected Instance instance;
+	protected String name;
 	
 	/**
 	 * Object or class on which it is called
@@ -48,8 +48,8 @@ public class MethodCall implements Expression {
 	 * @param _name : Name of the called function.
 	 * @param _arguments : List of AST nodes that computes the values of the parameters for the function call.
 	 */
-	public MethodCall(Expression _objectOrClass, Instance _instance, List<Expression> _arguments) {
-		this.instance = _instance;
+	public MethodCall(Expression _objectOrClass, String _name, List<Expression> _arguments) {
+		this.name = _name;
 		this.method = null;
 		this.arguments = _arguments;
 		this.objectOrClass = _objectOrClass;
@@ -60,7 +60,7 @@ public class MethodCall implements Expression {
 	 */
 	@Override
 	public String toString() {
-		String _result = ((this.method == null)?this.instance.getName():this.method) + "( ";
+		String _result = ((this.method == null)?this.name:this.method) + "( ";
 		Iterator<Expression> _iter = this.arguments.iterator();
 		if (_iter.hasNext()) {
 			_result += _iter.next();
@@ -76,7 +76,7 @@ public class MethodCall implements Expression {
 	 */
 	@Override
 	public boolean collectAndBackwardResolve(HierarchicalScope<Declaration> _scope) {
-		if (_scope.knows(this.instance.getName(), this.arguments)) {
+		if (_scope.knows(this.name, this.arguments)) {
 			boolean result = true;
 			for (Expression arg : this.arguments) {
 				result = result && arg.collectAndBackwardResolve(_scope);
@@ -102,7 +102,7 @@ public class MethodCall implements Expression {
 		if ( decl instanceof MethodDeclaration) {
 			this.method = (MethodDeclaration) decl;
 			// On vérifie qu'on a le droit d'appeler cette méthode sur cet objet
-			if (expr instanceof IdentifierAccess) {
+			if (objectOrClass instanceof IdentifierAccess) {
 				IdentifierAccess id = (IdentifierAccess) expr;
 				Type idType = id.getType();
 				if (idType instanceof Instance) {
@@ -119,7 +119,7 @@ public class MethodCall implements Expression {
 					return false;
 				}
 			// Ou alors c'est une méthode statique de classe
-			} else if (expr instanceof Instance) {
+			} else if (objectOrClass instanceof Instance) {
 				Instance inst = (Instance) idType;
 				ClassDeclaration classDecl = inst.getDeclaration();
 				if (classDecl.getMethods().contains(this.method)) {
