@@ -1,0 +1,9 @@
+public interface A {
+	void setAttr(int attr);
+}
+
+public class Main {
+	public static void main(String args[]) {
+		print("Hello world!");
+	}
+}

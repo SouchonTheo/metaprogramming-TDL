@@ -1,0 +1,14 @@
+public interface A {
+
+	private int attr;
+
+	void setAttr(int attr){
+		this.attr = attr;
+	}
+}
+
+public class Main {
+	public static void main(String args[]) {
+		print("Hello world!");
+	}
+}
