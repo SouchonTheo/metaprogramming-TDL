@@ -136,7 +136,7 @@ public class ClassDeclaration implements Instruction, Declaration {
         return methods;
     }
 
-    public List<ConstructorDeclaration> getConstructors(HierarchicalScope<Declaration> _scope) {
+    public List<ConstructorDeclaration> getConstructors() {
         List<ConstructorDeclaration> constructors = new ArrayList<ConstructorDeclaration>();
 
         for(ClassElement c: this.classElements) {
@@ -221,7 +221,7 @@ public class ClassDeclaration implements Instruction, Declaration {
                 result = result && temp;
             }
 
-            List<ConstructorDeclaration> constructors = this.getConstructors(_scope);
+            List<ConstructorDeclaration> constructors = this.getConstructors();
             boolean constrDefault = true;
             for(ConstructorDeclaration c : constructors) {
                 if (c.getParameters().size() == 0) {

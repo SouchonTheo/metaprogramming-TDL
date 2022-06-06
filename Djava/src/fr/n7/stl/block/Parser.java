@@ -1756,6 +1756,7 @@ class CUP$Parser$actions {
 		Object instance = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		//@@CUPDBG61
 
+			RESULT = (Type)instance;
 			
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Type",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -2801,6 +2802,7 @@ class CUP$Parser$actions {
 		Type type = (Type)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		//@@CUPDBG123
  
+				 RESULT = new ConstructorCall((Type)type);
 					/* début retrait miniJava
 					RESULT = new PointerAllocation( type ); 
 					fin retrait miniJava */
@@ -2821,6 +2823,7 @@ class CUP$Parser$actions {
 		List<Expression> parametres = (List<Expression>)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		//@@CUPDBG124
  
+				 RESULT = new ConstructorCall((Type)type,(List<Expression>)parametres);
 					/* début retrait miniJava
 					RESULT = new PointerAllocation( type ); 
 					fin retrait miniJava */

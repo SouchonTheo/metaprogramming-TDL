@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import fr.n7.stl.block.ast.expression.Expression;
+import fr.n7.stl.block.ast.instruction.declaration.ClassDeclaration;
+import fr.n7.stl.block.ast.instruction.declaration.ParameterDeclaration;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
 import fr.n7.stl.block.ast.type.AtomicType;
@@ -28,10 +30,12 @@ public class ConstructorCall implements Expression {
 	 * Name of the called function.
 	 */
 	protected String name;
-	
+
+	protected ClassDeclaration classe;
+
+	Type typeToInstance;
 	/**
 	 * Declaration of the called function after name resolution.
-	 * TODO : Should rely on the VariableUse class.
 	 */
 	protected ConstructorDeclaration constructor;
 	
@@ -44,11 +48,17 @@ public class ConstructorCall implements Expression {
 	 * @param _name : Name of the called function.
 	 * @param _arguments : List of AST nodes that computes the values of the parameters for the function call.
 	 */
-	public ConstructorCall(String _name, List<Expression> _arguments) {
-		this.name = _name;
+	public ConstructorCall(Type typeToInstance, List<Expression> _arguments) {
+		this.typeToInstance = typeToInstance;
 		this.constructor = null;
 		this.arguments = _arguments;
 	}
+	public ConstructorCall(Type typeToInstance) {
+		this.typeToInstance = typeToInstance;
+		this.constructor = null;
+		this.arguments = new ArrayList<Expression>();
+	}
+
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -79,19 +89,39 @@ public class ConstructorCall implements Expression {
 	 */
 	@Override
 	public boolean fullResolve(HierarchicalScope<Declaration> _scope) {
-		if (((HierarchicalScope<Declaration>)_scope).knows(this.name)) {
-			Declaration _declaration = _scope.get(this.name);
-			if (_declaration instanceof ConstructorDeclaration) {
-				this.constructor = ((ConstructorDeclaration) _declaration);
-				return true;
+		if(typeToInstance instanceof Instance){
+			Declaration declaration = ((Instance)typeToInstance).instanciate(_scope);
+			if(declaration instanceof ClassDeclaration) {
+				this.classe = (ClassDeclaration)declaration;
+				if(!this.classe.isAbstract()) {
+					List<ConstructorDeclaration> classConstructors = this.classe.getConstructors();
+					for (ConstructorDeclaration c : classConstructors){
+						boolean temp = true;
+						List<ParameterDeclaration> check = c.getParameters();
+						if (check.size() == this.arguments.size()) {
+							for(int i = 0; i< check.size(); i++) {
+								temp = temp && check.get(i).getType().compatibleWith(this.arguments.get(i).getType());
+							}
+						} else {
+							temp = false;
+						}
+						if(temp){
+							this.constructor = c;
+							return true;
+						}
+					}
+					Logger.error("No constructor corresponds to the one called");
+					
+				} else {
+					Logger.error("Can't call a constructor on an abstract class");
+				}
 			} else {
-				Logger.error("The call for " + this.name + " is of the wrong kind.");
-				return false;
+				Logger.error("Constructor called with not the name of a class");
 			}
 		} else {
-			Logger.error("The identifier " + this.name + " has not been found.");
-			return false;	
+			Logger.error("Atomic types don't have constructors");
 		}
+		return false;
 	}
 	/*
 	@Override

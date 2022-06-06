@@ -9,12 +9,13 @@ import fr.n7.stl.block.ast.expression.Expression;
 import fr.n7.stl.block.ast.instruction.declaration.ClassDeclaration;
 import fr.n7.stl.block.ast.scope.Declaration;
 import fr.n7.stl.block.ast.scope.HierarchicalScope;
+import fr.n7.stl.block.ast.type.AtomicType;
 import fr.n7.stl.block.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.TAMFactory;
 import fr.n7.stl.util.Logger;
 
-public class Instance implements Expression {
+public class Instance  implements Expression,Type {
     protected String name;
     protected List<Instance> generiques = new ArrayList<Instance>();
     protected ClassDeclaration declaration; 
@@ -70,11 +71,34 @@ public class Instance implements Expression {
         return result && this.declaration.fullResolve(_scope);
     }
 
+    public boolean resolve(HierarchicalScope<Declaration> _scope) {
+        return this.fullResolve(_scope);
+    }
+
     @Override
     public Type getType() {
         return this.declaration.getType();
     }
 
+    public int length() {
+        Logger.error("Length not implemented yet for Instance");
+        return 1;
+    }
+
+    public Type merge(Type _other) {
+        Logger.error("Merge not implementedfor instance");
+        return AtomicType.ErrorType;
+    }
+
+    public boolean compatibleWith(Type _other) {
+        Logger.error("compatibleWith not implemented for instance");
+        return false;
+    }
+
+    public boolean equalsTo(Type _other) {
+        Logger.error("equalsTo not implemented for instance");
+        return false;
+    }
     @Override
     public Fragment getCode(TAMFactory _factory) {
         throw new SemanticsUndefinedException("Semantics getCode");
