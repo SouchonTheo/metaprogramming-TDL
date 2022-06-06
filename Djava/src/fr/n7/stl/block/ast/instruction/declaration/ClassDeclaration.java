@@ -171,27 +171,26 @@ public class ClassDeclaration implements Instruction, Declaration {
                     retour = retour && i.collectAndBackwardResolve(tds);
                 }
             }
-            if (this.heritage != null){
-                // a verifier
-                // retour = retour && this.heritage.collectAndBackwardResolve(tds);
-            }
+
             
             for(ClassElement c : this.classElements) {
-                for(ClassElement h : this.heritage.getDeclaration().getClassElements()) {
-                    if (c.getName().equals(h.getName()) && h.isFinal()) {
-                        ArrayList<ParameterDeclaration> cTab = c.getParameters();
-                        ArrayList<ParameterDeclaration> hTab = h.getParameters();
-                        Boolean condHeritage = true;
-                        if (cTab.size() == hTab.size()) {
-                            for(int i = 0; i < c.getParameters().size(); i++) {
-                                if (cTab.get(i).getType().equals(hTab.get(i).getType())){
-                                    condHeritage = false;
+                if(this.heritage != null) {
+                    for(ClassElement h : this.heritage.getDeclaration().getClassElements()) {
+                        if (c.getName().equals(h.getName()) && h.isFinal() && c instanceof MethodDeclaration && h instanceof MethodDeclaration) {
+                            List<ParameterDeclaration> cTab = ((MethodDeclaration) c).getParameters();
+                            List<ParameterDeclaration> hTab = ((MethodDeclaration) h).getParameters();
+                            Boolean condHeritage = true;
+                            if (cTab.size() == hTab.size()) {
+                                for(int i = 0; i < cTab.size(); i++) {
+                                    if (cTab.get(i).getType().equals(hTab.get(i).getType())){
+                                        condHeritage = false;
+                                    }
                                 }
+                                if (!condHeritage){
+                                    Logger.error("Final method redifine");
+                                }
+                                retour = retour && condHeritage;
                             }
-                            if (!condHeritage){
-                                Logger.error("Final method redifine");
-                            }
-                            retour = retour && condHeritage;
                         }
                     }
                 }
